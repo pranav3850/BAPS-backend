@@ -15,26 +15,6 @@ const nodemailer = require('nodemailer');
 // const utcMonth = today.getUTCMonth();
 
 
-router.post("/SaveServicesList", (req, res, next) => {
-    db.executeSql("INSERT INTO `serviceslist`(`name`, `price`, `time`, `point`, `isactive`, `createdate`,`epoint`)VALUES('" + req.body.name + "'," + req.body.price + "," + req.body.time + "," + req.body.point + ",true,CURRENT_TIMESTAMP," + req.body.epoint + ");", function(data, err) {
-        if (err) {
-            res.json("error");
-        } else {
-
-            return res.json(data);
-        }
-    });
-});
-router.post("/SaveSalaryList", (req, res, next) => {
-    db.executeSql("INSERT INTO `salary`(`salary`, `desc`, `paiddate`, `empid`)VALUES(" + req.body.salary + " , '" + req.body.desc + "' , '" + req.body.paiddate + "' ," + req.body.empid + ");", function(data, err) {
-        if (err) {
-            res.json("error");
-        } else {
-
-            return res.json(data);
-        }
-    });
-});
 router.get("/GetAllMandalTypeList", (req, res, next) => {
     db.executeSql("SELECT DISTINCT mandaltype from mandal", function(data, err) {
         if (err) {
@@ -62,6 +42,61 @@ router.get("/GetAllRelationList", (req, res, next) => {
         }
     })
 });
+
+router.post("/SaveMemberList", (req, res, next) => {
+    db.executeSql("SELECT * FROM `basicinfo` where contactNo='" + req.body.contact + "'", function(data, err) {
+        if (err) {
+            console.log(err);
+        } else {
+            if (data.length > 0) {
+                res.json('Contactno is not unique');
+            } else {
+                for (let i = 0; i < req.body.length; i++) {
+                    let test = [];
+                    db.executeSql("INSERT INTO `basicinfo` (`firstName`, `middleName`, `lastName`, `relationship`, `mandaltype`, `mandalName`, `mandalId`, `contactNo`, `familyId`) VALUES ('" +
+                        req.body[i].fname + "','" + req.body[i].mname + "','" + req.body[i].lname + "','" + req.body[i].relation + "','" + req.body[i].mandaltype + "','" + req.body[i].mandalname + "'," + req.body[i].mandalid + ",'" + req.body[i].contact + "',NULL" + ")",
+                        function(data, err) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+
+                                db.executeSql("INSERT INTO `draftstaus`( `userId`, `status`) VALUES (" + data.insertId + "," + 1 + ")", function(data1, err) {
+                                    if (err) {
+                                        console.log(err);
+                                    } else {
+                                        let a = {
+                                            id: data.insertId,
+                                            status: 1
+                                        };
+                                        test.push(a);
+                                        console.log(test);
+                                        if (i == req.body.length - 1) {
+                                            console.log("im here");
+                                            res.json(test);
+                                        }
+                                    }
+                                });
+                            }
+                        })
+
+
+                }
+
+            }
+        }
+    })
+});
+
+router.get("/getAllSavedMembersList", (req, res, next) => {
+    db.executeSql("select * from `basicinfo`", function(data, err) {
+        if (err) {
+            console.log(err);
+        } else {
+            return res.json(data);
+        }
+    })
+});
+
 router.get("/GetAllServices", (req, res, next) => {
     db.executeSql("select * from serviceslist", function(data, err) {
         if (err) {
