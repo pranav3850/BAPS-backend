@@ -44,11 +44,14 @@ router.get("/GetAllRelationList", (req, res, next) => {
 });
 
 router.post("/SaveMemberList", (req, res, next) => {
-    db.executeSql("SELECT * FROM `basicinfo` where contactNo='" + req.body.contact + "'", function(data, err) {
+    console.log(req.body);
+    db.executeSql("SELECT * FROM `basicinfo` where contactNo='" + req.body[0].contact + "'", function(data, err) {
         if (err) {
             console.log(err);
         } else {
+            console.log(data);
             if (data.length > 0) {
+
                 res.json('Contactno is not unique');
             } else {
                 for (let i = 0; i < req.body.length; i++) {
