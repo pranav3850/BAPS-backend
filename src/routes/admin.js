@@ -60,6 +60,16 @@ router.get("/getAllFamilyList", (req, res, next) => {
         }
     })
 });
+router.get("/getAllFamilyForData",(req,res,next)=>{
+    db.executeSql("select f.familyId,f.monNo,f.noOfFamilyMem,e.userId,e.firstName,e.middlename,e.lastName,e.relationship,e.mandaltype,e.mandalName,e.mandalId,e.contactNo,e.familyId as e.fid from family f join basicinfo e on f.familyId=e.fid", function(data, err) {
+        if (err) {
+            console.log(err);
+        } else {
+            return res.json(data);
+        }
+    })
+})
+
 
 
 router.post("/createFamily",(req,res,next)=>{
@@ -107,12 +117,10 @@ router.post("/getOldDetails",(req,res,next)=>{
 
 
 router.post("/SaveMemberList", (req, res, next) => {
-    console.log(req.body);
     db.executeSql("SELECT * FROM `basicinfo` where contactNo='" + req.body[0].contactNo + "'", function(data, err) {
         if (err) {
             console.log(err);
         } else {
-            console.log(data);
             if (data.length > 0) {
                 console.log("im hereee")
                 let test=[];
@@ -137,7 +145,6 @@ router.post("/SaveMemberList", (req, res, next) => {
                                             status: 1
                                         };
                                         test.push(a);
-                                        console.log(test);
                                         if (i == req.body.length - 1) {
                                             console.log("im here");
                                             res.json(test);
@@ -156,8 +163,6 @@ router.post("/SaveMemberList", (req, res, next) => {
 });
 
 router.post("/SaveProffesionInfo", (req, res, next) => {
-    console.log('profession')
-    console.log(req.body);
 
                 for (let i = 0; i < req.body.length; i++) {
                     let test = [];
@@ -197,6 +202,8 @@ router.get("/getRedtickCount", (req, res, next) => {
     })
 });
 
+
+
 router.get("/getYellowtickCount", (req, res, next) => {
     db.executeSql("select * from `draftstaus` where status=2", function(data, err) {
         if (err) {
@@ -227,6 +234,37 @@ router.get("/getAllSavedMembersList", (req, res, next) => {
     })
 });
 
+
+router.get("/GetHaribhaktInfo", (req, res, next) => {
+    console.log(req.params,'get all redtick')
+    db.executeSql("select from proffesioinfo where status=1", function(data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+})
+
+router.get("/RemoveHaribhaktDetails/:id", (req, res, next) => {
+    db.executeSql("Delete from basicinfo where userId=" + req.params.id, function(data, err) {
+        if (err) {
+            console.log(err);
+        } else {
+            return res.json(data);
+        }
+    });
+})
+
+router.get("/RemoveMandalDetails/:id", (req, res, next) => {
+    db.executeSql("Delete from mandal where id=" + req.params.id, function(data, err) {
+        if (err) {
+            console.log(err);
+        } else {
+            return res.json(data);
+        }
+    });
+})
 
 router.get("/getAllHaribhakt", (req, res, next) => {
         db.executeSql("select * from  basicinfo ;", function(data, err) {
