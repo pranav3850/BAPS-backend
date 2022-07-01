@@ -75,8 +75,7 @@ router.post("/getOldDetails",(req,res,next)=>{
     db.executeSql("select * from family where mobNo="+req.body.mob, function(data, err) {
         if (err) {
             console.log(err);
-        } else {
-            if(data.length>0){
+        } else if(data.length>0) {
                 db.executeSql("select bi.userId,bi.firstName,bi.middleName,bi.lastName,bi.relationship,bi.mandaltype,bi.mandalName,bi.mandalId,bi.contactNo,bi.familyId,ds.status from basicInfo bi join draftstaus ds on bi.userId=ds.userId where bi.familyId="+data[0].familyId,function(data1,err){
                     if(err){
                         console.log(err)
@@ -84,11 +83,24 @@ router.post("/getOldDetails",(req,res,next)=>{
                     }else{
                         res.json(data1)
                     }
-                })
-            }else{
-                res.json('no family')
-            }
-            
+                })  
+        }
+        else{
+            db.executeSql("select * from basicinfo where contactNo="+req.body.mob,function(data2,err){
+                if(data2.length>0){
+                    db.executeSql("select bi.userId,bi.firstName,bi.middleName,bi.lastName,bi.relationship,bi.mandaltype,bi.mandalName,bi.mandalId,bi.contactNo,bi.familyId,ds.status from basicInfo bi join draftstaus ds on bi.userId=ds.userId where bi.familyId="+data2[0].familyId,function(data3,err){
+                        if(err){
+                            console.log(err)
+                            res.json('err')
+                        }else{
+                            res.json(data3)
+                        }
+                    }) 
+                }else{
+                    res.json('no family');
+                }
+                
+            })
         }
     })
 })
