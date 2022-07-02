@@ -81,6 +81,18 @@ router.post("/createFamily",(req,res,next)=>{
         }
     })
 });
+router.post("/updateHaribhakt",(req,res,next)=>{
+    console.log(req.body);
+    if(req.body.status==1){
+        db.executeSql("delete from basicinfo where userId="+req.body.userId,function(data,err){
+            if(err){
+                res.json(err)
+            }else{
+                
+            }
+        })
+    }
+})
 router.post("/getOldDetails",(req,res,next)=>{
     db.executeSql("select * from family where mobNo="+req.body.mob, function(data, err) {
         if (err) {
@@ -152,7 +164,7 @@ router.post("/SaveMemberList", (req, res, next) => {
                                     }
                                 });
                             }
-                        })
+                    })
 
 
                 }
@@ -167,7 +179,7 @@ router.post("/SaveProffesionInfo", (req, res, next) => {
                 for (let i = 0; i < req.body.length; i++) {
                     let test = [];
                     db.executeSql("INSERT INTO `proffesioinfo`( `userId`, `address`, `pincode`, `skill`, `profession`, `education`, `occupation`, `businessType`, `workInfo`,`city`) VALUES (" +
-                        req.body[i].userId + ",'" + req.body[i].address + "','" + req.body[i].pincode + "','" + req.body[i].skills + "','" + req.body[i].profession + "','" + req.body[i].education + "','" + req.body[i].occupation + "','" + req.body[i].businessType + "','"+ req.body[i].workInfo+ "',"+req.body[i].city+"')",
+                        req.body[i].userId + ",'" + req.body[i].address + "','" + req.body[i].pincode + "','" + req.body[i].skills + "','" + req.body[i].profession + "','" + req.body[i].education + "','" + req.body[i].occupation + "','" + req.body[i].businessType + "','"+ req.body[i].workInfo+ "','"+req.body[i].city+"')",
                         function(data, err) {
                             if (err) {
                                 console.log(err);
