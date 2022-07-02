@@ -163,11 +163,11 @@ router.post("/SaveMemberList", (req, res, next) => {
 });
 
 router.post("/SaveProffesionInfo", (req, res, next) => {
-
+    console.log(req.body);
                 for (let i = 0; i < req.body.length; i++) {
                     let test = [];
-                    db.executeSql("INSERT INTO `proffesioinfo`( `userId`, `address`, `pincode`, `skill`, `profession`, `education`, `occupation`, `businessType`, `workInfo`) VALUES (" +
-                        req.body[i].userId + ",'" + req.body[i].address + "','" + req.body[i].pincode + "','" + req.body[i].skills + "','" + req.body[i].profession + "','" + req.body[i].education + "','" + req.body[i].occupation + "','" + req.body[i].businessType + "','"+ req.body.workInfo+ "')",
+                    db.executeSql("INSERT INTO `proffesioinfo`( `userId`, `address`, `pincode`, `skill`, `profession`, `education`, `occupation`, `businessType`, `workInfo`,`city`) VALUES (" +
+                        req.body[i].userId + ",'" + req.body[i].address + "','" + req.body[i].pincode + "','" + req.body[i].skills + "','" + req.body[i].profession + "','" + req.body[i].education + "','" + req.body[i].occupation + "','" + req.body[i].businessType + "','"+ req.body[i].workInfo+ "',"+req.body[i].city+"')",
                         function(data, err) {
                             if (err) {
                                 console.log(err);
@@ -193,7 +193,17 @@ router.post("/SaveProffesionInfo", (req, res, next) => {
 });
 
 router.get("/getRedtickCount", (req, res, next) => {
-    db.executeSql("select * from `draftstaus` where status=1", function(data, err) {
+    db.executeSql("select bi.userId,bi.firstName,bi.middleName,bi.lastName,bi.relationship,bi.mandaltype,bi.mandalName,bi.mandalId,bi.contactNo,bi.familyId,ds.status from basicInfo bi join draftstaus ds on bi.userId=ds.userId where ds.status=1", function(data, err) {
+        if (err) {
+            console.log(err);
+        } else {
+            return res.json(data);
+        }
+    })
+});
+
+router.post("/getEditDataforSecondStage", (req, res, next) => {
+    db.executeSql("select bi.userId,bi.firstName,bi.middleName,bi.lastName,bi.relationship,bi.mandaltype,bi.mandalName,bi.mandalId,bi.contactNo,bi.familyId,pi.proffesionId,pi.address,pi.pincode,pi.skill,pi.profession,pi.education,pi.occupation,pi.businessType,pi.workInfo from basicinfo bi join proffesioinfo pi on bi.userId=pi.userId where bi.userId="+req.body.userId, function(data, err) {
         if (err) {
             console.log(err);
         } else {
