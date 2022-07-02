@@ -223,7 +223,15 @@ router.post("/getEditDataforSecondStage", (req, res, next) => {
         }
     })
 });
-
+router.post("/SaveMandalList", (req, res, next) => {
+    db.executeSql("INSERT INTO `mandal`(`name`, `mandaltype`) VALUES ('"+req.body.name+"','"+req.body.mandaltype+"');", function(data, err) {
+        if (err) {
+            console.log(err);
+        } else {
+            return res.json(data);
+        }
+    })
+});
 
 
 router.get("/getYellowtickCount", (req, res, next) => {
@@ -256,18 +264,6 @@ router.get("/getAllSavedMembersList", (req, res, next) => {
     })
 });
 
-
-router.get("/GetHaribhaktInfo", (req, res, next) => {
-    console.log(req.params,'get all redtick')
-    db.executeSql("select from proffesioinfo where status=1", function(data, err) {
-        if (err) {
-            console.log("Error in store.js", err);
-        } else {
-            return res.json(data);
-        }
-    });
-})
-
 router.get("/RemoveHaribhaktDetails/:id", (req, res, next) => {
     db.executeSql("Delete from basicinfo where userId=" + req.params.id, function(data, err) {
         if (err) {
@@ -288,6 +284,16 @@ router.get("/RemoveMandalDetails/:id", (req, res, next) => {
     });
 })
 
+router.post("/UpdateMandalList", (req, res, next) => {
+    console.log(req.body)
+    db.executeSql("UPDATE `mandal` SET name='" + req.body.name + "',mandaltype='" + req.body.mandaltype	 + "' where id=" + req.body.id + ";", function(data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+})
 router.get("/getAllHaribhakt", (req, res, next) => {
         db.executeSql("select * from  basicinfo ;", function(data, err) {
             if (err) {
