@@ -33,6 +33,24 @@ router.get("/GetMandalList/:type", (req, res, next) => {
         }
     })
 });
+
+router.post("/savePersonalInfo",(req,res,next)=>{
+    console.log(req.body);
+    for(let i=0;i<req.body.length;i++){
+        db.executeSql("INSERT INTO `personalinfo`( `familyId`, `firstName`, `middleName`, `lastName`, `contactNo`, `mandalType`, `mandalName`, `mandalId`, `relationship`, `address`, `city`, `pincode`, `email`, `gender`, `bloodGrp`, `dob`, `maritalStatus`, `profession`, `status`, `occupation`, `businessType`, `workInfo`, `isForeignCountry`, `foreignCountry`, `foreignCity`, `foreignContact`, `tag`, `education`, `prepareIelts`,`skill`) VALUES ("+req.body[i].familyId+",'"+req.body[i].firstName+"','"+req.body[i].middleName+"','"+req.body[i].lastName+"','"+req.body[i].contactNo+"','"+req.body[i].mandalType+"','"+req.body[i].mandalName+"',"+req.body[i].mandalId+",'"+req.body[i].relationship+"','"+req.body[i].address+"','"+req.body[i].city+"','"+req.body[i].pincode+"','"+req.body[i].email+"','"+req.body[i].gender+"','"+req.body[i].bloodGrp+"','"+req.body[i].dob+"','"+req.body[i].maritalStatus+"','"+req.body[i].profession+"','"+req.body[i].status+"','"+req.body[i].occupation+"','"+req.body[i].businessType+"','"+req.body[i].workInfo+"',"+req.body[i].isForeignCountry+",'"+req.body[i].foreignCountry+"','"+req.body[i].foreignCity+"','"+req.body[i].foreignContact+"','"+req.body[i].tag+"','"+req.body[i].education+"',"+req.body[i].prepareIelts+",'"+req.body[i].skill+"')",function(data,err){
+            if(err){
+                console.log(err);
+                res.json(err)
+            }else{
+
+            }
+            if(i-(req.body.length-1)){
+                res.json('success')
+            }
+        })
+    }
+})
+
 router.get("/GetAllMandalList", (req, res, next) => {
     db.executeSql("select * from mandal ;", function(data, err) {
         if (err) {
@@ -90,7 +108,7 @@ router.post("/getOldDetails",(req,res,next)=>{
         if (err) {
             console.log(err);
         } else if(data.length>0) {
-                db.executeSql("select bi.userId,bi.firstName,bi.middleName,bi.lastName,bi.relationship,bi.mandaltype,bi.mandalName,bi.mandalId,bi.contactNo,bi.familyId,ds.status from basicInfo bi join draftstaus ds on bi.userId=ds.userId where bi.familyId="+data[0].familyId,function(data1,err){
+                db.executeSql("select * from personalInfo where familyId="+data[0].familyId,function(data1,err){
                     if(err){
                         console.log(err)
                         res.json('err')
@@ -100,9 +118,9 @@ router.post("/getOldDetails",(req,res,next)=>{
                 })  
         }
         else{
-            db.executeSql("select * from basicinfo where contactNo="+req.body.mob,function(data2,err){
+            db.executeSql("select * from personalInfo where contactNo="+req.body.mob,function(data2,err){
                 if(data2.length>0){
-                    db.executeSql("select bi.userId,bi.firstName,bi.middleName,bi.lastName,bi.relationship,bi.mandaltype,bi.mandalName,bi.mandalId,bi.contactNo,bi.familyId,ds.status from basicInfo bi join draftstaus ds on bi.userId=ds.userId where bi.familyId="+data2[0].familyId,function(data3,err){
+                    db.executeSql("select * from personalInfo where familyId="+data2[0].familyId,function(data3,err){
                         if(err){
                             console.log(err)
                             res.json('err')
@@ -165,6 +183,16 @@ router.post("/SaveMemberList", (req, res, next) => {
         }
     })
 });
+
+router.post("/verifyNumber",(req,res,next)=>{
+    db.executeSql("select * from personalinfo where contactNo="+req.body.mob,function(data,err){
+        if(err){
+            res.json(err)
+        }else{
+            res.json(data)
+        }
+    })
+})
 
 router.post("/SaveProffesionInfo", (req, res, next) => {
     console.log(req.body);
