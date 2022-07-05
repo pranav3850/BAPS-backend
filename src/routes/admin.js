@@ -51,15 +51,7 @@ router.get("/GetAllRelationList", (req, res, next) => {
         }
     })
 });
-router.get("/getAllFamilyList", (req, res, next) => {
-    db.executeSql("select * from family", function(data, err) {
-        if (err) {
-            console.log(err);
-        } else {
-             res.json(data);
-        }
-    })
-});
+
 router.get("/getAllFamilyForData",(req,res,next)=>{
     db.executeSql("select f.familyId,f.monNo,f.noOfFamilyMem,e.userId,e.firstName,e.middlename,e.lastName,e.relationship,e.mandaltype,e.mandalName,e.mandalId,e.contactNo,e.familyId as e.fid from family f join basicinfo e on f.familyId=e.fid", function(data, err) {
         if (err) {
@@ -233,9 +225,18 @@ router.post("/SaveMandalList", (req, res, next) => {
     })
 });
 
+router.get("/getAllFamilyList", (req, res, next) => {
+    db.executeSql("select f.familyId,f.mobNo,f.noOfFamilyMem,bi.userId,bi.firstName,bi.middleName,bi.lastName,bi.relationship,bi.mandaltype,bi.mandalName,bi.mandalId,bi.contactNo from family f join basicInfo bi on f.mobNo=bi.contactNo", function(data, err) {
+        if (err) {
+            console.log(err);
+        } else {
+             res.json(data);
+        }
+    })
+});
 
 router.get("/getYellowtickCount", (req, res, next) => {
-    db.executeSql("select * from `draftstaus` where status=2", function(data, err) {
+    db.executeSql("select bi.userId,bi.firstName,bi.middleName,bi.lastName,bi.relationship,bi.mandaltype,bi.mandalName,bi.mandalId,bi.contactNo,bi.familyId,ds.status from basicInfo bi join draftstaus ds on bi.userId=ds.userId where ds.status=2", function(data, err) {
         if (err) {
             console.log(err);
         } else {
@@ -245,7 +246,7 @@ router.get("/getYellowtickCount", (req, res, next) => {
 });
 
 router.get("/getGreentickCount", (req, res, next) => {
-    db.executeSql("select * from `draftstaus` where status=3", function(data, err) {
+    db.executeSql("select bi.userId,bi.firstName,bi.middleName,bi.lastName,bi.relationship,bi.mandaltype,bi.mandalName,bi.mandalId,bi.contactNo,bi.familyId,ds.status from basicInfo bi join draftstaus ds on bi.userId=ds.userId where ds.status=3", function(data, err) {
         if (err) {
             console.log(err);
         } else {
