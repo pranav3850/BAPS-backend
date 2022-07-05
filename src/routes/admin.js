@@ -16,7 +16,7 @@ const nodemailer = require('nodemailer');
 
 
 router.get("/GetAllMandalTypeList", (req, res, next) => {
-    db.executeSql("SELECT DISTINCT mandaltype from mandal", function(data, err) {
+    db.executeSql("SELECT DISTINCT mandaltype from mandal", function (data, err) {
         if (err) {
             console.log(err);
         } else {
@@ -25,7 +25,7 @@ router.get("/GetAllMandalTypeList", (req, res, next) => {
     })
 });
 router.get("/GetMandalList/:type", (req, res, next) => {
-    db.executeSql("select * from mandal where mandaltype='" + req.params.type + "'", function(data, err) {
+    db.executeSql("select * from mandal where mandaltype='" + req.params.type + "'", function (data, err) {
         if (err) {
             console.log(err);
         } else {
@@ -34,106 +34,137 @@ router.get("/GetMandalList/:type", (req, res, next) => {
     })
 });
 
-router.post("/savePersonalInfo",(req,res,next)=>{
+router.post("/savePersonalInfo", (req, res, next) => {
     console.log(req.body);
-    for(let i=0;i<req.body.length;i++){
-        db.executeSql("INSERT INTO `personalinfo`( `familyId`, `firstName`, `middleName`, `lastName`, `contactNo`, `mandalType`, `mandalName`, `mandalId`, `relationship`, `address`, `city`, `pincode`, `email`, `gender`, `bloodGrp`, `dob`, `maritalStatus`, `profession`, `status`, `occupation`, `businessType`, `workInfo`, `isForeignCountry`, `foreignCountry`, `foreignCity`, `foreignContact`, `tag`, `education`, `prepareIelts`,`skill`) VALUES ("+req.body[i].familyId+",'"+req.body[i].firstName+"','"+req.body[i].middleName+"','"+req.body[i].lastName+"','"+req.body[i].contactNo+"','"+req.body[i].mandalType+"','"+req.body[i].mandalName+"',"+req.body[i].mandalId+",'"+req.body[i].relationship+"','"+req.body[i].address+"','"+req.body[i].city+"','"+req.body[i].pincode+"','"+req.body[i].email+"','"+req.body[i].gender+"','"+req.body[i].bloodGrp+"','"+req.body[i].dob+"','"+req.body[i].maritalStatus+"','"+req.body[i].profession+"','"+req.body[i].status+"','"+req.body[i].occupation+"','"+req.body[i].businessType+"','"+req.body[i].workInfo+"',"+req.body[i].isForeignCountry+",'"+req.body[i].foreignCountry+"','"+req.body[i].foreignCity+"','"+req.body[i].foreignContact+"','"+req.body[i].tag+"','"+req.body[i].education+"',"+req.body[i].prepareIelts+",'"+req.body[i].skill+"')",function(data,err){
-            if(err){
+    for (let i = 0; i < req.body.length; i++) {
+        db.executeSql("INSERT INTO `personalinfo`( `familyId`, `firstName`, `middleName`, `lastName`, `contactNo`, `mandalType`, `mandalName`, `mandalId`, `relationship`, `address`, `city`, `pincode`, `email`, `gender`, `bloodGrp`, `dob`, `maritalStatus`, `profession`, `status`, `occupation`, `businessType`, `workInfo`, `isForeignCountry`, `foreignCountry`, `foreignCity`, `foreignContact`, `tag`, `education`, `prepareIelts`,`skill`) VALUES (" + req.body[i].familyId + ",'" + req.body[i].firstName + "','" + req.body[i].middleName + "','" + req.body[i].lastName + "','" + req.body[i].contactNo + "','" + req.body[i].mandalType + "','" + req.body[i].mandalName + "'," + req.body[i].mandalId + ",'" + req.body[i].relationship + "','" + req.body[i].address + "','" + req.body[i].city + "','" + req.body[i].pincode + "','" + req.body[i].email + "','" + req.body[i].gender + "','" + req.body[i].bloodGrp + "','" + req.body[i].dob + "','" + req.body[i].maritalStatus + "','" + req.body[i].profession + "','" + req.body[i].status + "','" + req.body[i].occupation + "','" + req.body[i].businessType + "','" + req.body[i].workInfo + "'," + req.body[i].isForeignCountry + ",'" + req.body[i].foreignCountry + "','" + req.body[i].foreignCity + "','" + req.body[i].foreignContact + "','" + req.body[i].tag + "','" + req.body[i].education + "'," + req.body[i].prepareIelts + ",'" + req.body[i].skill + "')", function (data, err) {
+            if (err) {
                 console.log(err);
                 res.json(err)
-            }else{
+            } else {
 
             }
-            if(i-(req.body.length-1)){
+            if (i - (req.body.length - 1)) {
                 res.json('success')
             }
         })
     }
 })
 
+router.post("/updatePersonalInfo", (req, res, next) => {
+    console.log(req.body);
+        db.executeSql("delete from personalinfo where userId="+req.body[0].userId,function(data,err){
+            if(err){
+                res.json(err)
+            }else{
+                for (let i = 0; i < req.body.length; i++) {
+                    db.executeSql("INSERT INTO `personalinfo`( `familyId`, `firstName`, `middleName`, `lastName`, `contactNo`, `mandalType`, `mandalName`, `mandalId`, `relationship`, `address`, `city`, `pincode`, `email`, `gender`, `bloodGrp`, `dob`, `maritalStatus`, `profession`, `status`, `occupation`, `businessType`, `workInfo`, `isForeignCountry`, `foreignCountry`, `foreignCity`, `foreignContact`, `tag`, `education`, `prepareIelts`,`skill`) VALUES (" + req.body[i].familyId + ",'" + req.body[i].firstName + "','" + req.body[i].middleName + "','" + req.body[i].lastName + "','" + req.body[i].contactNo + "','" + req.body[i].mandalType + "','" + req.body[i].mandalName + "'," + req.body[i].mandalId + ",'" + req.body[i].relationship + "','" + req.body[i].address + "','" + req.body[i].city + "','" + req.body[i].pincode + "','" + req.body[i].email + "','" + req.body[i].gender + "','" + req.body[i].bloodGrp + "','" + req.body[i].dob + "','" + req.body[i].maritalStatus + "','" + req.body[i].profession + "','" + req.body[i].status + "','" + req.body[i].occupation + "','" + req.body[i].businessType + "','" + req.body[i].workInfo + "'," + req.body[i].isForeignCountry + ",'" + req.body[i].foreignCountry + "','" + req.body[i].foreignCity + "','" + req.body[i].foreignContact + "','" + req.body[i].tag + "','" + req.body[i].education + "'," + req.body[i].prepareIelts + ",'" + req.body[i].skill + "')", function (data, err) {
+                        if (err) {
+                            console.log(err);
+                            res.json(err)
+                        } else {
+            
+                        }
+                        if (i - (req.body.length - 1)) {
+                            res.json('success')
+                        }
+                    })
+                }
+            }
+
+        })
+
+
+
+
+
+       
+    
+})
+
 router.get("/GetAllMandalList", (req, res, next) => {
-    db.executeSql("select * from mandal ;", function(data, err) {
+    db.executeSql("select * from mandal ;", function (data, err) {
         if (err) {
             console.log(err);
         } else {
-             res.json(data);
+            res.json(data);
         }
     })
 });
 router.get("/GetAllRelationList", (req, res, next) => {
-    db.executeSql("select * from relation", function(data, err) {
+    db.executeSql("select * from relation", function (data, err) {
         if (err) {
             console.log(err);
         } else {
-             res.json(data);
+            res.json(data);
         }
     })
 });
 
-router.get("/getAllFamilyForData",(req,res,next)=>{
+router.get("/getAllFamilyForData", (req, res, next) => {
     console.log('sjhuishxjhsjixhijshxui')
-    db.executeSql("select f.familyId,f.mobNo,f.noOfFamilyMem,e.userId,e.firstName,e.middlename,e.lastName,e.relationship,e.mandalType,e.mandalName,e.mandalId from family f left join personalinfo e on f.mobNo=e.contactNo and f.familyId=e.familyId", function(data, err) {
+    db.executeSql("select f.familyId,f.mobNo,f.noOfFamilyMem,e.userId,e.firstName,e.middlename,e.lastName,e.relationship,e.mandalType,e.mandalName,e.mandalId from family f left join personalinfo e on f.mobNo=e.contactNo and f.familyId=e.familyId", function (data, err) {
         if (err) {
             console.log(err);
             res.json(err)
         } else {
-             res.json(data);
+            res.json(data);
         }
     })
 })
 
 
 
-router.post("/createFamily",(req,res,next)=>{
-    db.executeSql("INSERT INTO `family`( `mobNo`, `noOfFamilyMem`) VALUES ('"+req.body.mob+"',"+req.body.nooffammem+")", function(data, err) {
+router.post("/createFamily", (req, res, next) => {
+    db.executeSql("INSERT INTO `family`( `mobNo`, `noOfFamilyMem`) VALUES ('" + req.body.mob + "'," + req.body.nooffammem + ")", function (data, err) {
         if (err) {
             console.log(err);
         } else {
-             res.json(data);
+            res.json(data);
         }
     })
 });
-router.post("/updateHaribhakt",(req,res,next)=>{
+router.post("/updateHaribhakt", (req, res, next) => {
     console.log(req.body);
-    if(req.body.status==1){
-        db.executeSql("delete from basicinfo where userId="+req.body.userId,function(data,err){
-            if(err){
+    if (req.body.status == 1) {
+        db.executeSql("delete from basicinfo where userId=" + req.body.userId, function (data, err) {
+            if (err) {
                 res.json(err)
-            }else{
-                
+            } else {
+
             }
         })
     }
 })
-router.post("/getOldDetails",(req,res,next)=>{
-    db.executeSql("select * from family where mobNo="+req.body.mob, function(data, err) {
+router.post("/getOldDetails", (req, res, next) => {
+    db.executeSql("select * from family where mobNo=" + req.body.mob, function (data, err) {
         if (err) {
             console.log(err);
-        } else if(data.length>0) {
-                db.executeSql("select * from personalInfo where familyId="+data[0].familyId,function(data1,err){
-                    if(err){
-                        console.log(err)
-                        res.json('err')
-                    }else{
-                        res.json(data1)
-                    }
-                })  
+        } else if (data.length > 0) {
+            db.executeSql("select * from personalInfo where familyId=" + data[0].familyId, function (data1, err) {
+                if (err) {
+                    console.log(err)
+                    res.json('err')
+                } else {
+                    res.json(data1)
+                }
+            })
         }
-        else{
-            db.executeSql("select * from personalInfo where contactNo="+req.body.mob,function(data2,err){
-                if(data2.length>0){
-                    db.executeSql("select * from personalInfo where familyId="+data2[0].familyId,function(data3,err){
-                        if(err){
+        else {
+            db.executeSql("select * from personalInfo where contactNo=" + req.body.mob, function (data2, err) {
+                if (data2.length > 0) {
+                    db.executeSql("select * from personalInfo where familyId=" + data2[0].familyId, function (data3, err) {
+                        if (err) {
                             console.log(err)
                             res.json('err')
-                        }else{
+                        } else {
                             res.json(data3)
                         }
-                    }) 
-                }else{
+                    })
+                } else {
                     res.json('no family');
                 }
-                
+
             })
         }
     })
@@ -141,26 +172,26 @@ router.post("/getOldDetails",(req,res,next)=>{
 
 
 router.post("/SaveMemberList", (req, res, next) => {
-    db.executeSql("SELECT * FROM `basicinfo` where contactNo='" + req.body[0].contactNo + "'", function(data, err) {
+    db.executeSql("SELECT * FROM `basicinfo` where contactNo='" + req.body[0].contactNo + "'", function (data, err) {
         if (err) {
             console.log(err);
         } else {
             if (data.length > 0) {
                 console.log("im hereee")
-                let test=[];
+                let test = [];
                 data[0].isDuplicate = true;
-                data[0].status=1;
+                data[0].status = 1;
                 res.json(data);
             } else {
                 for (let i = 0; i < req.body.length; i++) {
                     let test = [];
                     db.executeSql("INSERT INTO `basicinfo` (`firstName`, `middleName`, `lastName`, `relationship`, `mandaltype`, `mandalName`, `mandalId`, `contactNo`, `familyId`) VALUES ('" +
-                        req.body[i].firstName + "','" + req.body[i].middleName + "','" + req.body[i].lastName + "','" + req.body[i].relationship + "','" + req.body[i].mandaltype + "','" + req.body[i].mandalName + "'," + req.body[i].mandalId + ",'" + req.body[i].contactNo + "',"+req.body[i].familyId + ")",
-                        function(data, err) {
+                        req.body[i].firstName + "','" + req.body[i].middleName + "','" + req.body[i].lastName + "','" + req.body[i].relationship + "','" + req.body[i].mandaltype + "','" + req.body[i].mandalName + "'," + req.body[i].mandalId + ",'" + req.body[i].contactNo + "'," + req.body[i].familyId + ")",
+                        function (data, err) {
                             if (err) {
                                 console.log(err);
                             } else {
-                                db.executeSql("INSERT INTO `draftstaus`( `userId`, `status`) VALUES (" + data.insertId + "," + 1 + ")", function(data1, err) {
+                                db.executeSql("INSERT INTO `draftstaus`( `userId`, `status`) VALUES (" + data.insertId + "," + 1 + ")", function (data1, err) {
                                     if (err) {
                                         console.log(err);
                                     } else {
@@ -176,7 +207,7 @@ router.post("/SaveMemberList", (req, res, next) => {
                                     }
                                 });
                             }
-                    })
+                        })
 
 
                 }
@@ -186,11 +217,11 @@ router.post("/SaveMemberList", (req, res, next) => {
     })
 });
 
-router.post("/verifyNumber",(req,res,next)=>{
-    db.executeSql("select * from personalinfo where contactNo="+req.body.mob,function(data,err){
-        if(err){
+router.post("/verifyNumber", (req, res, next) => {
+    db.executeSql("select * from personalinfo where contactNo=" + req.body.mob, function (data, err) {
+        if (err) {
             res.json(err)
-        }else{
+        } else {
             res.json(data)
         }
     })
@@ -198,36 +229,36 @@ router.post("/verifyNumber",(req,res,next)=>{
 
 router.post("/SaveProffesionInfo", (req, res, next) => {
     console.log(req.body);
-                for (let i = 0; i < req.body.length; i++) {
-                    let test = [];
-                    db.executeSql("INSERT INTO `proffesioinfo`( `userId`, `address`, `pincode`, `skill`, `profession`, `education`, `occupation`, `businessType`, `workInfo`,`city`) VALUES (" +
-                        req.body[i].userId + ",'" + req.body[i].address + "','" + req.body[i].pincode + "','" + req.body[i].skills + "','" + req.body[i].profession + "','" + req.body[i].education + "','" + req.body[i].occupation + "','" + req.body[i].businessType + "','"+ req.body[i].workInfo+ "','"+req.body[i].city+"')",
-                        function(data, err) {
-                            if (err) {
-                                console.log(err);
-                            } else {
-                                db.executeSql("update draftstaus set status=2 where userId="+req.body[i].userId, function(data1, err) {
-                                    if (err) {
-                                        console.log(err);
-                                    } else {
-                                        let a = {
-                                            status: 2
-                                        };
-                                        test.push(a);
-                                        console.log(test);
-                                        if (i == req.body.length - 1) {
-                                            console.log("im here");
-                                            res.json(test);
-                                        }
-                                    }
-                                });
+    for (let i = 0; i < req.body.length; i++) {
+        let test = [];
+        db.executeSql("INSERT INTO `proffesioinfo`( `userId`, `address`, `pincode`, `skill`, `profession`, `education`, `occupation`, `businessType`, `workInfo`,`city`) VALUES (" +
+            req.body[i].userId + ",'" + req.body[i].address + "','" + req.body[i].pincode + "','" + req.body[i].skills + "','" + req.body[i].profession + "','" + req.body[i].education + "','" + req.body[i].occupation + "','" + req.body[i].businessType + "','" + req.body[i].workInfo + "','" + req.body[i].city + "')",
+            function (data, err) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    db.executeSql("update draftstaus set status=2 where userId=" + req.body[i].userId, function (data1, err) {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            let a = {
+                                status: 2
+                            };
+                            test.push(a);
+                            console.log(test);
+                            if (i == req.body.length - 1) {
+                                console.log("im here");
+                                res.json(test);
                             }
-                        })
+                        }
+                    });
                 }
+            })
+    }
 });
 
 router.get("/getRedtickCount", (req, res, next) => {
-    db.executeSql("select bi.userId,bi.firstName,bi.middleName,bi.lastName,bi.relationship,bi.mandaltype,bi.mandalName,bi.mandalId,bi.contactNo,bi.familyId,ds.status from basicInfo bi join draftstaus ds on bi.userId=ds.userId where ds.status=1", function(data, err) {
+    db.executeSql("select bi.userId,bi.firstName,bi.middleName,bi.lastName,bi.relationship,bi.mandaltype,bi.mandalName,bi.mandalId,bi.contactNo,bi.familyId,ds.status from basicInfo bi join draftstaus ds on bi.userId=ds.userId where ds.status=1", function (data, err) {
         if (err) {
             console.log(err);
         } else {
@@ -237,7 +268,7 @@ router.get("/getRedtickCount", (req, res, next) => {
 });
 
 router.post("/getEditDataforSecondStage", (req, res, next) => {
-    db.executeSql("select bi.userId,bi.firstName,bi.middleName,bi.lastName,bi.relationship,bi.mandaltype,bi.mandalName,bi.mandalId,bi.contactNo,bi.familyId,pi.proffesionId,pi.address,pi.pincode,pi.skill,pi.profession,pi.education,pi.occupation,pi.businessType,pi.workInfo from basicinfo bi join proffesioinfo pi on bi.userId=pi.userId where bi.userId="+req.body.userId, function(data, err) {
+    db.executeSql("select bi.userId,bi.firstName,bi.middleName,bi.lastName,bi.relationship,bi.mandaltype,bi.mandalName,bi.mandalId,bi.contactNo,bi.familyId,pi.proffesionId,pi.address,pi.pincode,pi.skill,pi.profession,pi.education,pi.occupation,pi.businessType,pi.workInfo from basicinfo bi join proffesioinfo pi on bi.userId=pi.userId where bi.userId=" + req.body.userId, function (data, err) {
         if (err) {
             console.log(err);
         } else {
@@ -246,7 +277,7 @@ router.post("/getEditDataforSecondStage", (req, res, next) => {
     })
 });
 router.post("/SaveMandalList", (req, res, next) => {
-    db.executeSql("INSERT INTO `mandal`(`name`, `mandaltype`) VALUES ('"+req.body.name+"','"+req.body.mandaltype+"');", function(data, err) {
+    db.executeSql("INSERT INTO `mandal`(`name`, `mandaltype`) VALUES ('" + req.body.name + "','" + req.body.mandaltype + "');", function (data, err) {
         if (err) {
             console.log(err);
         } else {
@@ -256,17 +287,17 @@ router.post("/SaveMandalList", (req, res, next) => {
 });
 
 router.get("/getAllFamilyList", (req, res, next) => {
-    db.executeSql("select f.familyId,f.mobNo,f.noOfFamilyMem,bi.userId,bi.firstName,bi.middleName,bi.lastName,bi.relationship,bi.mandaltype,bi.mandalName,bi.mandalId,bi.contactNo from family f join basicInfo bi on f.mobNo=bi.contactNo", function(data, err) {
+    db.executeSql("select f.familyId,f.mobNo,f.noOfFamilyMem,bi.userId,bi.firstName,bi.middleName,bi.lastName,bi.relationship,bi.mandaltype,bi.mandalName,bi.mandalId,bi.contactNo from family f join basicInfo bi on f.mobNo=bi.contactNo", function (data, err) {
         if (err) {
             console.log(err);
         } else {
-             res.json(data);
+            res.json(data);
         }
     })
 });
 
 router.get("/getYellowtickCount", (req, res, next) => {
-    db.executeSql("select bi.userId,bi.firstName,bi.middleName,bi.lastName,bi.relationship,bi.mandaltype,bi.mandalName,bi.mandalId,bi.contactNo,bi.familyId,ds.status from basicInfo bi join draftstaus ds on bi.userId=ds.userId where ds.status=2", function(data, err) {
+    db.executeSql("select bi.userId,bi.firstName,bi.middleName,bi.lastName,bi.relationship,bi.mandaltype,bi.mandalName,bi.mandalId,bi.contactNo,bi.familyId,ds.status from basicInfo bi join draftstaus ds on bi.userId=ds.userId where ds.status=2", function (data, err) {
         if (err) {
             console.log(err);
         } else {
@@ -276,7 +307,7 @@ router.get("/getYellowtickCount", (req, res, next) => {
 });
 
 router.get("/getGreentickCount", (req, res, next) => {
-    db.executeSql("select bi.userId,bi.firstName,bi.middleName,bi.lastName,bi.relationship,bi.mandaltype,bi.mandalName,bi.mandalId,bi.contactNo,bi.familyId,ds.status from basicInfo bi join draftstaus ds on bi.userId=ds.userId where ds.status=3", function(data, err) {
+    db.executeSql("select bi.userId,bi.firstName,bi.middleName,bi.lastName,bi.relationship,bi.mandaltype,bi.mandalName,bi.mandalId,bi.contactNo,bi.familyId,ds.status from basicInfo bi join draftstaus ds on bi.userId=ds.userId where ds.status=3", function (data, err) {
         if (err) {
             console.log(err);
         } else {
@@ -286,7 +317,7 @@ router.get("/getGreentickCount", (req, res, next) => {
 });
 
 router.get("/getAllSavedMembersList", (req, res, next) => {
-    db.executeSql("select * from `basicinfo`", function(data, err) {
+    db.executeSql("select * from `basicinfo`", function (data, err) {
         if (err) {
             console.log(err);
         } else {
@@ -296,7 +327,7 @@ router.get("/getAllSavedMembersList", (req, res, next) => {
 });
 
 router.get("/RemoveHaribhaktDetails/:id", (req, res, next) => {
-    db.executeSql("Delete from basicinfo where userId=" + req.params.id, function(data, err) {
+    db.executeSql("Delete from basicinfo where userId=" + req.params.id, function (data, err) {
         if (err) {
             console.log(err);
         } else {
@@ -306,7 +337,7 @@ router.get("/RemoveHaribhaktDetails/:id", (req, res, next) => {
 })
 
 router.get("/RemoveMandalDetails/:id", (req, res, next) => {
-    db.executeSql("Delete from mandal where id=" + req.params.id, function(data, err) {
+    db.executeSql("Delete from mandal where id=" + req.params.id, function (data, err) {
         if (err) {
             console.log(err);
         } else {
@@ -317,7 +348,7 @@ router.get("/RemoveMandalDetails/:id", (req, res, next) => {
 
 router.post("/UpdateMandalList", (req, res, next) => {
     console.log(req.body)
-    db.executeSql("UPDATE `mandal` SET name='" + req.body.name + "',mandaltype='" + req.body.mandaltype	 + "' where id=" + req.body.id + ";", function(data, err) {
+    db.executeSql("UPDATE `mandal` SET name='" + req.body.name + "',mandaltype='" + req.body.mandaltype + "' where id=" + req.body.id + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -326,35 +357,44 @@ router.post("/UpdateMandalList", (req, res, next) => {
     });
 })
 router.get("/getAllHaribhakt", (req, res, next) => {
-        db.executeSql("select * from  personalinfo ;", function(data, err) {
-            if (err) {
-                console.log("Error in store.js", err);
-            } else {
-                return res.json(data);
-            }
-        });
-    })
-    // let secret = 'prnv';
+    db.executeSql("select * from  personalinfo ;", function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+})
+router.post("/vetifyNumber", (req, res, next) => {
+    db.executeSql("select * from  personalinfo where contactNo="+req.body.mob, function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+})
+// let secret = 'prnv';
 
 let secret = 'prnv';
-router.post('/GetUsersLogin', function(req, res, next) {
+router.post('/GetUsersLogin', function (req, res, next) {
     // restart1();
     const body = req.body;
     console.log(body, 'Main Email');
     var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
     var repass = salt + '' + body.password;
     var encPassword = crypto.createHash('sha1').update(repass).digest('hex');
-    db.executeSql("select * from admin where email='" + req.body.email + "';", function(data, err) {
+    db.executeSql("select * from admin where email='" + req.body.email + "';", function (data, err) {
         if (data == null || data == undefined) {
             return res.json(1);
         } else {
-            db.executeSql("select * from admin where email='" + req.body.email + "' and password='"+encPassword+"';", function(data, err) {
+            db.executeSql("select * from admin where email='" + req.body.email + "' and password='" + encPassword + "';", function (data, err) {
 
                 if (data == null || data == undefined) {
-        
+
                     return res.json(2);
                 } else {
-                    data[0].role='admin';
+                    data[0].role = 'admin';
                     res.json(data);
                 }
             });
@@ -368,7 +408,7 @@ router.post('/GetUsersLogin', function(req, res, next) {
 
 function generateUUID() {
     var d = new Date().getTime();
-    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx'.replace(/[xy]/g, function(c) {
+    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx'.replace(/[xy]/g, function (c) {
         var r = (d + Math.random() * 16) % 16 | 0;
         d = Math.floor(d / 16);
         return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
