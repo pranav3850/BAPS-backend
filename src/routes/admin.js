@@ -71,11 +71,13 @@ router.get("/GetAllRelationList", (req, res, next) => {
 });
 
 router.get("/getAllFamilyForData",(req,res,next)=>{
-    db.executeSql("select f.familyId,f.monNo,f.noOfFamilyMem,e.userId,e.firstName,e.middlename,e.lastName,e.relationship,e.mandaltype,e.mandalName,e.mandalId,e.contactNo,e.familyId as e.fid from family f join basicinfo e on f.familyId=e.fid", function(data, err) {
+    console.log('sjhuishxjhsjixhijshxui')
+    db.executeSql("select f.familyId,f.mobNo,f.noOfFamilyMem,e.userId,e.firstName,e.middlename,e.lastName,e.relationship,e.mandalType,e.mandalName,e.mandalId from family f left join personalinfo e on f.mobNo=e.contactNo and f.familyId=e.familyId", function(data, err) {
         if (err) {
             console.log(err);
+            res.json(err)
         } else {
-            return res.json(data);
+             res.json(data);
         }
     })
 })
@@ -324,7 +326,7 @@ router.post("/UpdateMandalList", (req, res, next) => {
     });
 })
 router.get("/getAllHaribhakt", (req, res, next) => {
-        db.executeSql("select * from  basicinfo ;", function(data, err) {
+        db.executeSql("select * from  personalinfo ;", function(data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
