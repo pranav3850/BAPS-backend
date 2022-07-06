@@ -327,7 +327,7 @@ router.get("/getAllSavedMembersList", (req, res, next) => {
 });
 
 router.get("/RemoveHaribhaktDetails/:id", (req, res, next) => {
-    db.executeSql("Delete from basicinfo where userId=" + req.params.id, function (data, err) {
+    db.executeSql("Delete from personalinfo where userId=" + req.params.id, function (data, err) {
         if (err) {
             console.log(err);
         } else {
