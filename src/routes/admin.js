@@ -66,7 +66,6 @@ router.post("/savePersonalInfo", (req, res, next) => {
 })
 
 router.post("/updatePersonalInfo", (req, res, next) => {
-    console.log(req.body);
         db.executeSql("delete from personalinfo where userId="+req.body[0].userId,function(data,err){
             if(err){
                 res.json(err)
@@ -81,17 +80,11 @@ router.post("/updatePersonalInfo", (req, res, next) => {
                             res.json('success')
                         }
                     })
+                    res.json('success')
                 }
             }
 
-        })
-
-
-
-
-
-       
-    
+        })   
 })
 
 router.get("/GetAllMandalList", (req, res, next) => {
