@@ -367,28 +367,46 @@ router.get("/RemoveMandalDetails/:id", (req, res, next) => {
         }
     });
 })
-router.post("/sendUserOTP", (req, res, next) => {
-    let otp = Math.floor(100000 + Math.random() * 900000);
-    console.log(req.body,'i am otp')
-    let number='8141952604'
-    request({
-        uri: 'https://login.smsforyou.biz/V2/http-api-post.php',
-        api_key: 'gx0ZGf1QZtmBN7Jr',
-          senderid:'9409612822',
-          number:number,
-          message:otp,
-          format:'json',
-        function(error, response, body) {
-          if (!error && response.statusCode === 200) {
-            console.log(body);
-            res.json(body);
-          } else {
-            res.json(error);
-          }
-        }
-      });
 
+router.post("/removeLastInsertedOTP", (req, res, next) => {
+    console.log(req.body)
+    db.executeSql("Delete from otp where contactno='" + req.body.contactno+"'", function (data, err) {
+        if (err) {
+            console.log(err);
+        } else {
+            return res.json(data);
+        }
+    });
 })
+router.post("/sendAndSaveUserOTP", (req, res, next) => {
+    let otp = Math.floor(100000 + Math.random() * 900000);
+    console.log(req.body,'i am otp',otp)
+    db.executeSql("INSERT INTO `otp`(`contactno`, `otp` , `createddate` ,`createdtime`) VALUES ('" + req.body.contactno + "'," + otp + ",CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);", function (data, err) {
+        if (err) {
+            console.log(err);
+        } else {
+
+            return res.json(data);
+                // request({
+    //     uri: 'https://login.smsforyou.biz/V2/http-api-post.php',
+    //     api_key: 'gx0ZGf1QZtmBN7Jr',
+    //       senderid:'9409612822',
+    //       number:number,
+    //       message:otp,
+    //       format:'json',
+    //     function(error, response, body) {
+    //       if (!error && response.statusCode === 200) {
+    //         console.log(body);
+    //         res.json(body);
+    //       } else {
+    //         res.json(error);
+    //       }
+    //     }
+    //   });
+        }
+    })
+});
+
 router.post("/UpdateMandalList", (req, res, next) => {
     console.log(req.body)
     db.executeSql("UPDATE `mandal` SET name='" + req.body.name + "',mandaltype='" + req.body.mandaltype + "' where id=" + req.body.id + ";", function (data, err) {
