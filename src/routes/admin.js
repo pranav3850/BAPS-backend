@@ -435,29 +435,48 @@ router.post("/addFamilytoNew", (req, res, next) => {
             console.log(err)
             console.log("Error in store.js", err);
         } else {
-           db.executeSql("select * from personalinfo where familyId="+data[0].familyId+" and relationship='Father'",function(data1,err){
-            console.log('err')    
-            if(err){
-                    console.log(err)
+            db.executeSql("update personalinfo set familyId="+req.body.familyId+" where familyId="+req.body.oldFamilyId,function(data,err){
+                if(err){
                     res.json(err)
                 }else{
-                    if(data1.length>0){
-                        db.executeSql("update personalinfo set familyId="+data[0].familyId+" where familyId="+req.body.familyId,function(data2,err){
-                            if(err){
-                                console.log(err)
-                                res.json(err)
-                            }else{
-                                console.log("updated");
-                                deleteFamily(req.body.familyId)
-                                res.json(data1);
-                            }
-                        })
-                    }else{
-                        res.json(data1);
-                    }
-                   
+                    db.executeSql("delete from family where familyId="+req.body.oldFamilyId,function(data1,err){
+                        if(err){
+                            res.json(err)
+                        }else{
+                            res.json('added')
+                        }
+                    })
+                    
                 }
-           })
+            })
+        
+        
+        
+        
+        
+            //    db.executeSql("select * from personalinfo where familyId="+data[0].familyId+" and relationship='Father'",function(data1,err){
+        //     console.log('err')    
+        //     if(err){
+        //             console.log(err)
+        //             res.json(err)
+        //         }else{
+        //             if(data1.length>0){
+        //                 db.executeSql("update personalinfo set familyId="+data[0].familyId+" where familyId="+req.body.familyId,function(data2,err){
+        //                     if(err){
+        //                         console.log(err)
+        //                         res.json(err)
+        //                     }else{
+        //                         console.log("updated");
+        //                         deleteFamily(req.body.familyId)
+        //                         res.json(data1);
+        //                     }
+        //                 })
+        //             }else{
+        //                 res.json(data1);
+        //             }
+                   
+        //         }
+        //    })
         }
     });
 })
