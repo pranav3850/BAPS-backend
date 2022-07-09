@@ -425,7 +425,13 @@ router.post("/addFamilytoNew", (req, res, next) => {
                         if(err){
                             res.json(err)
                         }else{
-                            res.json('added')
+                            db.executeSql("select * from personalinfo where familyId="+req.body.familyId,function(data2,err){
+                                if(err){
+                                    res.json(err)
+                                }else{
+                                    res.json(data2)
+                                }
+                            })
                         }
                     })
                     
