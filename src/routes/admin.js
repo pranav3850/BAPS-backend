@@ -8,13 +8,41 @@ var midway = require('./midway');
 const jwt = require('jsonwebtoken');
 var crypto = require('crypto');
 const { equal } = require("assert");
-const { Console } = require("console");
+const { Console, error } = require("console");
 const { json } = require("body-parser");
 const nodemailer = require('nodemailer');
-var request = require('request');
+const request = require('request');
 // const today = new Date();
 // const utcMonth = today.getUTCMonth();
+const schedule = require('node-schedule');
+const { response } = require("express");
+const url = 'https://login.smsforyou.biz/V2/http-api.php?apikey=gx0ZGf1QZtmBN7Jr&senderid=SAlert&number=8141952604&message=hello there&format=json&template_id=1407161607270448266';
 
+
+
+// request({url:url},(error,response)=>{
+//     // const data = JSON.parse(response.data)
+
+//     console.log('excute url',response)
+// })
+
+
+
+let dates = new Date(new Date().setDate(new Date().getDate() - 60));
+const jobs = schedule.scheduleJob(' */5 * * * *', function () {
+    console.log('Today is recognized by Rebecca Black!');
+});
+const job = schedule.scheduleJob('0 0 * * *', function () {
+    console.log('hello schedule')
+    db.executeSql("UPDATE `customer` SET `status`=false WHERE updateddate='" + dates.toISOString().slice(0, 10) + "';", function (data, err) {
+
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(data);
+        }
+    });
+});
 
 router.get("/GetAllMandalTypeList", (req, res, next) => {
     db.executeSql("SELECT DISTINCT mandaltype from mandal", function (data, err) {
@@ -38,54 +66,54 @@ router.get("/GetMandalList/:type", (req, res, next) => {
 router.post("/savePersonalInfo", (req, res, next) => {
     console.log(req.body);
     for (let i = 0; i < req.body.length; i++) {
-        db.executeSql("select * from personalinfo where familyId="+req.body[i].familyId+" and contactNo='"+req.body[i].contactNo+"';",function(data,err){
-            if(err){
-                
-                    res.json('err')
-                
-            }else{
-                if(data.length>0){
-                        data[0].msg='added';
-                        res.json(data)
-                    
-                }else{
-                    db.executeSql("INSERT INTO `personalinfo`( `familyId`, `firstName`, `middleName`, `lastName`, `contactNo`, `mandalType`, `mandalName`, `mandalId`, `relationship`, `address`, `city`, `pincode`, `email`, `gender`, `bloodGrp`, `dob`, `maritalStatus`, `profession`, `status`, `occupation`, `businessType`, `workInfo`, `isForeignCountry`, `foreignCountry`, `foreignCity`, `foreignContact`, `tag`, `education`, `prepareIelts`,`skill`,`company`,`businesscity`,`native`) VALUES (" + req.body[i].familyId + ",'" + req.body[i].firstName + "','" + req.body[i].middleName + "','" + req.body[i].lastName + "','" + req.body[i].contactNo + "','" + req.body[i].mandalType + "','" + req.body[i].mandalName + "'," + req.body[i].mandalId + ",'" + req.body[i].relationship + "','" + req.body[i].address + "','" + req.body[i].city + "','" + req.body[i].pincode + "','" + req.body[i].email + "','" + req.body[i].gender + "','" + req.body[i].bloodGrp + "','" + req.body[i].dob + "','" + req.body[i].maritalStatus + "','" + req.body[i].profession + "','" + req.body[i].status + "','" + req.body[i].occupation + "','" + req.body[i].businessType + "','" + req.body[i].workInfo + "'," + req.body[i].isForeignCountry + ",'" + req.body[i].foreignCountry + "','" + req.body[i].foreignCity + "','" + req.body[i].foreignContact + "','" + req.body[i].tag + "','" + req.body[i].education + "'," + req.body[i].prepareIelts + ",'" + req.body[i].skill + "','" + req.body[i].company + "','" + req.body[i].businesscity + "','"+req.body[i].native+"')", function (data1, err) {
+        db.executeSql("select * from personalinfo where familyId=" + req.body[i].familyId + " and contactNo='" + req.body[i].contactNo + "';", function (data, err) {
+            if (err) {
+
+                res.json('err')
+
+            } else {
+                if (data.length > 0) {
+                    data[0].msg = 'added';
+                    res.json(data)
+
+                } else {
+                    db.executeSql("INSERT INTO `personalinfo`( `familyId`, `firstName`, `middleName`, `lastName`, `contactNo`, `mandalType`, `mandalName`, `mandalId`, `relationship`, `address`, `city`, `pincode`, `email`, `gender`, `bloodGrp`, `dob`, `maritalStatus`, `profession`, `status`, `occupation`, `businessType`, `workInfo`, `isForeignCountry`, `foreignCountry`, `foreignCity`, `foreignContact`, `tag`, `education`, `prepareIelts`,`skill`,`company`,`businesscity`,`native`) VALUES (" + req.body[i].familyId + ",'" + req.body[i].firstName + "','" + req.body[i].middleName + "','" + req.body[i].lastName + "','" + req.body[i].contactNo + "','" + req.body[i].mandalType + "','" + req.body[i].mandalName + "'," + req.body[i].mandalId + ",'" + req.body[i].relationship + "','" + req.body[i].address + "','" + req.body[i].city + "','" + req.body[i].pincode + "','" + req.body[i].email + "','" + req.body[i].gender + "','" + req.body[i].bloodGrp + "','" + req.body[i].dob + "','" + req.body[i].maritalStatus + "','" + req.body[i].profession + "','" + req.body[i].status + "','" + req.body[i].occupation + "','" + req.body[i].businessType + "','" + req.body[i].workInfo + "'," + req.body[i].isForeignCountry + ",'" + req.body[i].foreignCountry + "','" + req.body[i].foreignCity + "','" + req.body[i].foreignContact + "','" + req.body[i].tag + "','" + req.body[i].education + "'," + req.body[i].prepareIelts + ",'" + req.body[i].skill + "','" + req.body[i].company + "','" + req.body[i].businesscity + "','" + req.body[i].native + "')", function (data1, err) {
                         if (err) {
                             res.json('err')
                         } else {
                             res.json(data1)
                         }
-                        
+
                     })
                 }
             }
         })
 
 
-  
+
     }
 })
 
 router.post("/updatePersonalInfo", (req, res, next) => {
-        db.executeSql("delete from personalinfo where userId="+req.body[0].userId,function(data,err){
-            if(err){
-                res.json(err)
-            }else{
-                for (let i = 0; i < req.body.length; i++) {
-                    db.executeSql("INSERT INTO `personalinfo`( `familyId`, `firstName`, `middleName`, `lastName`, `contactNo`, `mandalType`, `mandalName`, `mandalId`, `relationship`, `address`, `city`, `pincode`, `email`, `gender`, `bloodGrp`, `dob`, `maritalStatus`, `profession`, `status`, `occupation`, `businessType`, `workInfo`, `isForeignCountry`, `foreignCountry`, `foreignCity`, `foreignContact`, `tag`, `education`, `prepareIelts`,`skill`,`company`,`businesscity`,`native`) VALUES (" + req.body[i].familyId + ",'" + req.body[i].firstName + "','" + req.body[i].middleName + "','" + req.body[i].lastName + "','" + req.body[i].contactNo + "','" + req.body[i].mandalType + "','" + req.body[i].mandalName + "'," + req.body[i].mandalId + ",'" + req.body[i].relationship + "','" + req.body[i].address + "','" + req.body[i].city + "','" + req.body[i].pincode + "','" + req.body[i].email + "','" + req.body[i].gender + "','" + req.body[i].bloodGrp + "','" + req.body[i].dob + "','" + req.body[i].maritalStatus + "','" + req.body[i].profession + "','" + req.body[i].status + "','" + req.body[i].occupation + "','" + req.body[i].businessType + "','" + req.body[i].workInfo + "'," + req.body[i].isForeignCountry + ",'" + req.body[i].foreignCountry + "','" + req.body[i].foreignCity + "','" + req.body[i].foreignContact + "','" + req.body[i].tag + "','" + req.body[i].education + "'," + req.body[i].prepareIelts + ",'" + req.body[i].skill + "','" + req.body[i].company + "','" + req.body[i].businesscity + "','"+req.body[i].native+"')", function (data, err) {
-                        if (err) {
-                            console.log(err);
-                            res.json(err)
-                        } else {}
-                        if (i - (req.body.length - 1)) {
-                            res.json('success')
-                        }
-                    })
-                    res.json('success')
-                }
+    db.executeSql("delete from personalinfo where userId=" + req.body[0].userId, function (data, err) {
+        if (err) {
+            res.json(err)
+        } else {
+            for (let i = 0; i < req.body.length; i++) {
+                db.executeSql("INSERT INTO `personalinfo`( `familyId`, `firstName`, `middleName`, `lastName`, `contactNo`, `mandalType`, `mandalName`, `mandalId`, `relationship`, `address`, `city`, `pincode`, `email`, `gender`, `bloodGrp`, `dob`, `maritalStatus`, `profession`, `status`, `occupation`, `businessType`, `workInfo`, `isForeignCountry`, `foreignCountry`, `foreignCity`, `foreignContact`, `tag`, `education`, `prepareIelts`,`skill`,`company`,`businesscity`,`native`) VALUES (" + req.body[i].familyId + ",'" + req.body[i].firstName + "','" + req.body[i].middleName + "','" + req.body[i].lastName + "','" + req.body[i].contactNo + "','" + req.body[i].mandalType + "','" + req.body[i].mandalName + "'," + req.body[i].mandalId + ",'" + req.body[i].relationship + "','" + req.body[i].address + "','" + req.body[i].city + "','" + req.body[i].pincode + "','" + req.body[i].email + "','" + req.body[i].gender + "','" + req.body[i].bloodGrp + "','" + req.body[i].dob + "','" + req.body[i].maritalStatus + "','" + req.body[i].profession + "','" + req.body[i].status + "','" + req.body[i].occupation + "','" + req.body[i].businessType + "','" + req.body[i].workInfo + "'," + req.body[i].isForeignCountry + ",'" + req.body[i].foreignCountry + "','" + req.body[i].foreignCity + "','" + req.body[i].foreignContact + "','" + req.body[i].tag + "','" + req.body[i].education + "'," + req.body[i].prepareIelts + ",'" + req.body[i].skill + "','" + req.body[i].company + "','" + req.body[i].businesscity + "','" + req.body[i].native + "')", function (data, err) {
+                    if (err) {
+                        console.log(err);
+                        res.json(err)
+                    } else { }
+                    if (i - (req.body.length - 1)) {
+                        res.json('success')
+                    }
+                })
+                res.json('success')
             }
+        }
 
-        })   
+    })
 })
 
 router.get("/GetAllMandalList", (req, res, next) => {
@@ -122,13 +150,13 @@ router.get("/getAllFamilyForData", (req, res, next) => {
 
 
 router.post("/createFamily", (req, res, next) => {
-    db.executeSql("select * from family where mobNo="+req.body.mob,function(data,err){
-        if(err){
+    db.executeSql("select * from family where mobNo=" + req.body.mob, function (data, err) {
+        if (err) {
             res.json(err)
-        }else{
-            if(data.length>0){
+        } else {
+            if (data.length > 0) {
                 res.json(data)
-            }else{
+            } else {
                 db.executeSql("INSERT INTO `family`( `mobNo`, `noOfFamilyMem`) VALUES ('" + req.body.mob + "'," + req.body.nooffammem + ")", function (data, err) {
                     if (err) {
                         console.log(err);
@@ -139,7 +167,7 @@ router.post("/createFamily", (req, res, next) => {
             }
         }
     })
-    
+
 });
 router.post("/updateHaribhakt", (req, res, next) => {
     console.log(req.body);
@@ -169,9 +197,9 @@ router.post("/getOldDetails", (req, res, next) => {
         }
         else {
             db.executeSql("select * from personalinfo where contactNo=" + req.body.mob, function (data2, err) {
-                if(err){
+                if (err) {
                     res.json(err)
-                }else{
+                } else {
                     if (data2.length > 0) {
                         db.executeSql("select * from personalinfo where familyId=" + data2[0].familyId, function (data3, err) {
                             if (err) {
@@ -185,7 +213,7 @@ router.post("/getOldDetails", (req, res, next) => {
                         res.json('no family');
                     }
                 }
-                
+
 
             })
         }
@@ -370,7 +398,7 @@ router.get("/RemoveMandalDetails/:id", (req, res, next) => {
 
 router.post("/removeLastInsertedOTP", (req, res, next) => {
     console.log(req.body)
-    db.executeSql("Delete from otp where contactno='" + req.body.contactno+"'", function (data, err) {
+    db.executeSql("Delete from otp where contactno='" + req.body.contactno + "'", function (data, err) {
         if (err) {
             console.log(err);
         } else {
@@ -380,32 +408,43 @@ router.post("/removeLastInsertedOTP", (req, res, next) => {
 })
 router.post("/sendAndSaveUserOTP", (req, res, next) => {
     let otp = Math.floor(100000 + Math.random() * 900000);
-    console.log(req.body,'i am otp',otp)
+    console.log(req.body, 'i am otp', otp)
     db.executeSql("INSERT INTO `otp`(`contactno`, `otp` , `createddate` ,`createdtime`) VALUES ('" + req.body.contactno + "'," + otp + ",CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);", function (data, err) {
         if (err) {
             console.log(err);
         } else {
+            // return res.json(data);
+            request({
+                url: 'https://login.smsforyou.biz/V2/http-api-post.php',
+                api_key: 'gx0ZGf1QZtmBN7Jr',
+                senderid: 'SAlert',
+                number: req.body.contactNo,
+                message: otp,
+                template_id: '1407161607270448266',
+                format: 'json',
+                function(error, response, body) {
+                    if (!error && response.statusCode === 200) {
+                        console.log(body);
+                        res.json(body);
+                    } else {
+                        res.json(error);
+                    }
+                }
+            });
 
-            return res.json(data);
-                // request({
-    //     uri: 'https://login.smsforyou.biz/V2/http-api-post.php',
-    //     api_key: 'gx0ZGf1QZtmBN7Jr',
-    //       senderid:'9409612822',
-    //       number:number,
-    //       message:otp,
-    //       format:'json',
-    //     function(error, response, body) {
-    //       if (!error && response.statusCode === 200) {
-    //         console.log(body);
-    //         res.json(body);
-    //       } else {
-    //         res.json(error);
-    //       }
-    //     }
-    //   });
         }
     })
 });
+router.post("/getUserOTPVerify", (req, res, next) => {
+    console.log(req.body);
+    db.executeSql("select * from otp where contactno='" + req.body.contactno + "' AND otp='" + req.body.otp + "' ;", function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+})
 
 router.post("/UpdateMandalList", (req, res, next) => {
     console.log(req.body)
@@ -429,85 +468,85 @@ router.get("/getAllHaribhakt", (req, res, next) => {
 
 router.post("/addFamilytoNew", (req, res, next) => {
     console.log('here im')
-    db.executeSql("select * from  family where familyId="+req.body.oldFamilyId, function (data, err) {
-       
+    db.executeSql("select * from  family where familyId=" + req.body.oldFamilyId, function (data, err) {
+
         if (err) {
             console.log(err)
             console.log("Error in store.js", err);
         } else {
-            db.executeSql("update personalinfo set familyId="+req.body.familyId+" where familyId="+req.body.oldFamilyId,function(data,err){
-                if(err){
+            db.executeSql("update personalinfo set familyId=" + req.body.familyId + " where familyId=" + req.body.oldFamilyId, function (data, err) {
+                if (err) {
                     res.json(err)
-                }else{
-                    db.executeSql("delete from family where familyId="+req.body.oldFamilyId,function(data1,err){
-                        if(err){
+                } else {
+                    db.executeSql("delete from family where familyId=" + req.body.oldFamilyId, function (data1, err) {
+                        if (err) {
                             res.json(err)
-                        }else{
+                        } else {
                             res.json('added')
                         }
                     })
-                    
+
                 }
             })
-        
-        
-        
-        
-        
+
+
+
+
+
             //    db.executeSql("select * from personalinfo where familyId="+data[0].familyId+" and relationship='Father'",function(data1,err){
-        //     console.log('err')    
-        //     if(err){
-        //             console.log(err)
-        //             res.json(err)
-        //         }else{
-        //             if(data1.length>0){
-        //                 db.executeSql("update personalinfo set familyId="+data[0].familyId+" where familyId="+req.body.familyId,function(data2,err){
-        //                     if(err){
-        //                         console.log(err)
-        //                         res.json(err)
-        //                     }else{
-        //                         console.log("updated");
-        //                         deleteFamily(req.body.familyId)
-        //                         res.json(data1);
-        //                     }
-        //                 })
-        //             }else{
-        //                 res.json(data1);
-        //             }
-                   
-        //         }
-        //    })
+            //     console.log('err')    
+            //     if(err){
+            //             console.log(err)
+            //             res.json(err)
+            //         }else{
+            //             if(data1.length>0){
+            //                 db.executeSql("update personalinfo set familyId="+data[0].familyId+" where familyId="+req.body.familyId,function(data2,err){
+            //                     if(err){
+            //                         console.log(err)
+            //                         res.json(err)
+            //                     }else{
+            //                         console.log("updated");
+            //                         deleteFamily(req.body.familyId)
+            //                         res.json(data1);
+            //                     }
+            //                 })
+            //             }else{
+            //                 res.json(data1);
+            //             }
+
+            //         }
+            //    })
         }
     });
 })
-function deleteFamily(id){
+function deleteFamily(id) {
     console.log('im hererererere')
-    db.executeSql("delete from family where familyId="+id,function(data,err){
-        if(err){
+    db.executeSql("delete from family where familyId=" + id, function (data, err) {
+        if (err) {
             console.log(err)
-        }else{
+        } else {
             console.log(data)
         }
     })
 };
 router.post("/vetifyNumber", (req, res, next) => {
-    db.executeSql("select * from  personalinfo where contactNo="+req.body.mob, function (data, err) {
+    db.executeSql("select * from  personalinfo where contactNo=" + req.body.mob, function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
-        } else if(data.length >0) {
-           db.executeSql("select * from personalinfo where familyId="+data[0].familyId,function(data1,err){
-            if(err){
-                res.json(err)
-            }else{
-                
-                if(data1.length>0){
-                    res.json(data1)
-                }else{
-                    res.json(data)
+        } else if (data.length > 0) {
+            db.executeSql("select * from personalinfo where familyId=" + data[0].familyId, function (data1, err) {
+                if (err) {
+                    res.json(err)
+                } else {
+
+                    if (data1.length > 0) {
+                        res.json(data1)
+                    } else {
+                        res.json(data)
+                    }
                 }
-            }
-           })
-        }else{
+            })
+        } else {
             res.json('noFamily');
         }
     });
