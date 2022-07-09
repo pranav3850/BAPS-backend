@@ -16,7 +16,7 @@ const request = require('request');
 // const utcMonth = today.getUTCMonth();
 const schedule = require('node-schedule');
 const { response } = require("express");
-const url = 'https://login.smsforyou.biz/V2/http-api.php?apikey=gx0ZGf1QZtmBN7Jr&senderid=SAlert&number=8141952604&message=hello there&format=json&template_id=1407161607270448266';
+// const url = 'https://login.smsforyou.biz/V2/http-api.php?apikey=gx0ZGf1QZtmBN7Jr&senderid=SAlert&number=8141952604&message=hello there&format=json&template_id=1407161607270448266';
 
 
 
@@ -413,35 +413,30 @@ router.post("/sendAndSaveUserOTP", (req, res, next) => {
         if (err) {
             console.log(err);
         } else {
-            // return res.json(data);
-            request({
-                url: 'https://login.smsforyou.biz/V2/http-api-post.php',
-                api_key: 'gx0ZGf1QZtmBN7Jr',
-                senderid: 'SAlert',
-                number: req.body.contactNo,
-                message: otp,
-                template_id: '1407161607270448266',
-                format: 'json',
-                function(error, response, body) {
-                    if (!error && response.statusCode === 200) {
-                        console.log(body);
-                        res.json(body);
-                    } else {
-                        res.json(error);
-                    }
+            request.get('https://login.smsforyou.biz/V2/http-api.php?apikey=gx0ZGf1QZtmBN7Jr&senderid=SAlert&number='+req.body.contactno+'&message=OTP for login is '+otp+' and is valid for 5 minutes.(Generated at BAPS)&format=json',function(err,res){
+                if(err){
+                    console.log("error"+err)
+                }else{
+                    //  console.log(res)
                 }
-            });
-
+            })
+            
         }
     })
 });
 router.post("/getUserOTPVerify", (req, res, next) => {
     console.log(req.body);
-    db.executeSql("select * from otp where contactno='" + req.body.contactno + "' AND otp='" + req.body.otp + "' ;", function (data, err) {
+    db.executeSql("select * from otp where contactNo='" + req.body.contactno + "' AND otp='" + req.body.otp + "' ;", function (otpdata, err) {
         if (err) {
             console.log("Error in store.js", err);
+            res.json('err')
         } else {
-            return res.json(data);
+            if(otpdata.length >0){
+                return res.json(otpdata);
+            }else{
+                res.json('wrong');
+            }
+           
         }
     });
 })
