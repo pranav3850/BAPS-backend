@@ -29,11 +29,24 @@ const { response } = require("express");
 
 
 
-var minutesToAdd=-5;
+var minutesToAdd = -5;
 var currentDate = new Date();
-var futureDate = new Date(currentDate.getTime() + minutesToAdd*60000).getMinutes();
+var futureDate = new Date(currentDate.getTime() + minutesToAdd * 60000).getMinutes();
 console.log(futureDate);
-const jobs = schedule.scheduleJob(' */5 * * * *', function () {
+
+var today = new Date();
+var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+console.log(time);
+const jobs = schedule.scheduleJob(' * */5 * * * *', function () {
+    // console.log(milliseconds);
+
+    // db.executeSql("select * from otp", function (data, err) {
+    //     if (err) {
+    //         console.log(err);
+    //     } else {
+    //         return json(data);
+    //     }
+    // })
     console.log('Today is recognized by Rebecca Black!');
     // db.executeSql("delete from otp where time <="+dates);
 });
@@ -61,17 +74,17 @@ router.get("/GetMandalList/:type", (req, res, next) => {
 router.post("/savePersonalInfo", (req, res, next) => {
     console.log(req.body);
     for (let i = 0; i < req.body.length; i++) {
-        if(req.body[i].userId ==undefined){
+        if (req.body[i].userId == undefined) {
             db.executeSql("select * from personalinfo where familyId=" + req.body[i].familyId + " and contactNo='" + req.body[i].contactNo + "';", function (data, err) {
                 if (err) {
-    
+
                     res.json('err')
-    
+
                 } else {
                     if (data.length > 0) {
                         data[0].msg = 'added';
                         res.json(data)
-    
+
                     } else {
                         db.executeSql("INSERT INTO `personalinfo`( `familyId`, `firstName`, `middleName`, `lastName`, `contactNo`, `mandalType`, `mandalName`, `mandalId`, `relationship`, `address`, `city`, `pincode`, `email`, `gender`, `bloodGrp`, `dob`, `maritalStatus`, `profession`, `status`, `occupation`, `businessType`, `workInfo`, `isForeignCountry`, `foreignCountry`, `foreignCity`, `foreignContact`, `tag`, `education`, `prepareIelts`,`skill`,`company`,`businesscity`,`native`) VALUES (" + req.body[i].familyId + ",'" + req.body[i].firstName + "','" + req.body[i].middleName + "','" + req.body[i].lastName + "','" + req.body[i].contactNo + "','" + req.body[i].mandalType + "','" + req.body[i].mandalName + "'," + req.body[i].mandalId + ",'" + req.body[i].relationship + "','" + req.body[i].address + "','" + req.body[i].city + "','" + req.body[i].pincode + "','" + req.body[i].email + "','" + req.body[i].gender + "','" + req.body[i].bloodGrp + "','" + req.body[i].dob + "','" + req.body[i].maritalStatus + "','" + req.body[i].profession + "','" + req.body[i].status + "','" + req.body[i].occupation + "','" + req.body[i].businessType + "','" + req.body[i].workInfo + "'," + req.body[i].isForeignCountry + ",'" + req.body[i].foreignCountry + "','" + req.body[i].foreignCity + "','" + req.body[i].foreignContact + "','" + req.body[i].tag + "','" + req.body[i].education + "'," + req.body[i].prepareIelts + ",'" + req.body[i].skill + "','" + req.body[i].company + "','" + req.body[i].businesscity + "','" + req.body[i].native + "')", function (data1, err) {
                             if (err) {
@@ -79,29 +92,29 @@ router.post("/savePersonalInfo", (req, res, next) => {
                             } else {
                                 res.json(data1)
                             }
-    
+
                         })
                     }
                 }
             })
-        }else{
+        } else {
             db.executeSql("delete from personalinfo where userId=" + req.body[i].userId, function (data, err) {
                 if (err) {
                     console.log(err);
                     res.json(err)
                 } else {
-                        db.executeSql("INSERT INTO `personalinfo`( `familyId`, `firstName`, `middleName`, `lastName`, `contactNo`, `mandalType`, `mandalName`, `mandalId`, `relationship`, `address`, `city`, `pincode`, `email`, `gender`, `bloodGrp`, `dob`, `maritalStatus`, `profession`, `status`, `occupation`, `businessType`, `workInfo`, `isForeignCountry`, `foreignCountry`, `foreignCity`, `foreignContact`, `tag`, `education`, `prepareIelts`,`skill`,`company`,`businesscity`,`native`) VALUES (" + req.body[i].familyId + ",'" + req.body[i].firstName + "','" + req.body[i].middleName + "','" + req.body[i].lastName + "','" + req.body[i].contactNo + "','" + req.body[i].mandalType + "','" + req.body[i].mandalName + "'," + req.body[i].mandalId + ",'" + req.body[i].relationship + "','" + req.body[i].address + "','" + req.body[i].city + "','" + req.body[i].pincode + "','" + req.body[i].email + "','" + req.body[i].gender + "','" + req.body[i].bloodGrp + "','" + req.body[i].dob + "','" + req.body[i].maritalStatus + "','" + req.body[i].profession + "','" + req.body[i].status + "','" + req.body[i].occupation + "','" + req.body[i].businessType + "','" + req.body[i].workInfo + "'," + req.body[i].isForeignCountry + ",'" + req.body[i].foreignCountry + "','" + req.body[i].foreignCity + "','" + req.body[i].foreignContact + "','" + req.body[i].tag + "','" + req.body[i].education + "'," + req.body[i].prepareIelts + ",'" + req.body[i].skill + "','" + req.body[i].company + "','" + req.body[i].businesscity + "','" + req.body[i].native + "')", function (data, err) {
-                            if (err) {
-                                console.log(err);
-                                res.json(err)
-                            } else { 
-                                 res.json('success');
-                            } 
-                        })   
+                    db.executeSql("INSERT INTO `personalinfo`( `familyId`, `firstName`, `middleName`, `lastName`, `contactNo`, `mandalType`, `mandalName`, `mandalId`, `relationship`, `address`, `city`, `pincode`, `email`, `gender`, `bloodGrp`, `dob`, `maritalStatus`, `profession`, `status`, `occupation`, `businessType`, `workInfo`, `isForeignCountry`, `foreignCountry`, `foreignCity`, `foreignContact`, `tag`, `education`, `prepareIelts`,`skill`,`company`,`businesscity`,`native`) VALUES (" + req.body[i].familyId + ",'" + req.body[i].firstName + "','" + req.body[i].middleName + "','" + req.body[i].lastName + "','" + req.body[i].contactNo + "','" + req.body[i].mandalType + "','" + req.body[i].mandalName + "'," + req.body[i].mandalId + ",'" + req.body[i].relationship + "','" + req.body[i].address + "','" + req.body[i].city + "','" + req.body[i].pincode + "','" + req.body[i].email + "','" + req.body[i].gender + "','" + req.body[i].bloodGrp + "','" + req.body[i].dob + "','" + req.body[i].maritalStatus + "','" + req.body[i].profession + "','" + req.body[i].status + "','" + req.body[i].occupation + "','" + req.body[i].businessType + "','" + req.body[i].workInfo + "'," + req.body[i].isForeignCountry + ",'" + req.body[i].foreignCountry + "','" + req.body[i].foreignCity + "','" + req.body[i].foreignContact + "','" + req.body[i].tag + "','" + req.body[i].education + "'," + req.body[i].prepareIelts + ",'" + req.body[i].skill + "','" + req.body[i].company + "','" + req.body[i].businesscity + "','" + req.body[i].native + "')", function (data, err) {
+                        if (err) {
+                            console.log(err);
+                            res.json(err)
+                        } else {
+                            res.json('success');
+                        }
+                    })
                 }
             })
         }
-        
+
 
 
 
@@ -115,18 +128,18 @@ router.post("/updatePersonalInfo", (req, res, next) => {
             console.log(err);
             res.json(err)
         } else {
-                db.executeSql("INSERT INTO `personalinfo`( `familyId`, `firstName`, `middleName`, `lastName`, `contactNo`, `mandalType`, `mandalName`, `mandalId`, `relationship`, `address`, `city`, `pincode`, `email`, `gender`, `bloodGrp`, `dob`, `maritalStatus`, `profession`, `status`, `occupation`, `businessType`, `workInfo`, `isForeignCountry`, `foreignCountry`, `foreignCity`, `foreignContact`, `tag`, `education`, `prepareIelts`,`skill`,`company`,`businesscity`,`native`) VALUES (" + req.body.familyId + ",'" + req.body.firstName + "','" + req.body.middleName + "','" + req.body.lastName + "','" + req.body.contactNo + "','" + req.body.mandalType + "','" + req.body.mandalName + "'," + req.body.mandalId + ",'" + req.body.relationship + "','" + req.body.address + "','" + req.body.city + "','" + req.body.pincode + "','" + req.body.email + "','" + req.body.gender + "','" + req.body.bloodGrp + "','" + req.body.dob + "','" + req.body.maritalStatus + "','" + req.body.profession + "','" + req.body.status + "','" + req.body.occupation + "','" + req.body.businessType + "','" + req.body.workInfo + "'," + req.body.isForeignCountry + ",'" + req.body.foreignCountry + "','" + req.body.foreignCity + "','" + req.body.foreignContact + "','" + req.body.tag + "','" + req.body.education + "'," + req.body.prepareIelts + ",'" + req.body.skill + "','" + req.body.company + "','" + req.body.businesscity + "','" + req.body.native + "')", function (data, err) {
-                    if (err) {
-                        console.log(err);
-                        res.json(err)
-                    } else { 
-                       
-                        db.executeSql("update contactNo="+req.body.contactNo+" where familyId="+req.body.familyId,function(data1,err){
+            db.executeSql("INSERT INTO `personalinfo`( `familyId`, `firstName`, `middleName`, `lastName`, `contactNo`, `mandalType`, `mandalName`, `mandalId`, `relationship`, `address`, `city`, `pincode`, `email`, `gender`, `bloodGrp`, `dob`, `maritalStatus`, `profession`, `status`, `occupation`, `businessType`, `workInfo`, `isForeignCountry`, `foreignCountry`, `foreignCity`, `foreignContact`, `tag`, `education`, `prepareIelts`,`skill`,`company`,`businesscity`,`native`) VALUES (" + req.body.familyId + ",'" + req.body.firstName + "','" + req.body.middleName + "','" + req.body.lastName + "','" + req.body.contactNo + "','" + req.body.mandalType + "','" + req.body.mandalName + "'," + req.body.mandalId + ",'" + req.body.relationship + "','" + req.body.address + "','" + req.body.city + "','" + req.body.pincode + "','" + req.body.email + "','" + req.body.gender + "','" + req.body.bloodGrp + "','" + req.body.dob + "','" + req.body.maritalStatus + "','" + req.body.profession + "','" + req.body.status + "','" + req.body.occupation + "','" + req.body.businessType + "','" + req.body.workInfo + "'," + req.body.isForeignCountry + ",'" + req.body.foreignCountry + "','" + req.body.foreignCity + "','" + req.body.foreignContact + "','" + req.body.tag + "','" + req.body.education + "'," + req.body.prepareIelts + ",'" + req.body.skill + "','" + req.body.company + "','" + req.body.businesscity + "','" + req.body.native + "')", function (data, err) {
+                if (err) {
+                    console.log(err);
+                    res.json(err)
+                } else {
 
-                        });
-                         res.json('success');
-                    } 
-                })   
+                    db.executeSql("update contactNo=" + req.body.contactNo + " where familyId=" + req.body.familyId, function (data1, err) {
+
+                    });
+                    res.json('success');
+                }
+            })
         }
     })
 })
@@ -396,8 +409,8 @@ router.get("/RemoveHaribhaktDetails/:id", (req, res, next) => {
         if (err) {
             console.log(err);
         } else {
-             res.json('success');
-        
+            res.json('success');
+
         }
     });
 })
@@ -429,16 +442,16 @@ router.post("/sendAndSaveUserOTP", (req, res, next) => {
         if (err) {
             console.log(err);
         } else {
-            request.get('https://login.smsforyou.biz/V2/http-api.php?apikey=gx0ZGf1QZtmBN7Jr&senderid=SAlert&number='+req.body.contactno+'&message=OTP for login is '+otp+' and is valid for 5 minutes.(Generated at BAPS)&format=json',function(err,res){
-                if(err){
-                    console.log("error"+err)
-                }else{
+            request.get('https://login.smsforyou.biz/V2/http-api.php?apikey=gx0ZGf1QZtmBN7Jr&senderid=SAlert&number=' + req.body.contactno + '&message=OTP for login is ' + otp + ' and is valid for 5 minutes.(Generated at BAPS)&format=json', function (err, res) {
+                if (err) {
+                    console.log("error" + err)
+                } else {
                     //  console.log(res)
                     return
                 }
             })
             res.json('sent');
-            
+
         }
     })
 });
@@ -449,12 +462,12 @@ router.post("/getUserOTPVerify", (req, res, next) => {
             console.log("Error in store.js", err);
             res.json('err')
         } else {
-            if(otpdata.length >0){
+            if (otpdata.length > 0) {
                 return res.json(otpdata);
-            }else{
+            } else {
                 res.json('wrong');
             }
-           
+
         }
     });
 })
@@ -494,11 +507,11 @@ router.post("/addFamilytoNew", (req, res, next) => {
                     db.executeSql("delete from family where familyId=" + req.body.oldFamilyId, function (data1, err) {
                         if (err) {
                             res.json(err)
-                        }else{
-                            db.executeSql("select * from personalinfo where familyId="+req.body.familyId,function(data2,err){
-                                if(err){
+                        } else {
+                            db.executeSql("select * from personalinfo where familyId=" + req.body.familyId, function (data2, err) {
+                                if (err) {
                                     res.json(err)
-                                }else{
+                                } else {
                                     res.json(data2)
                                 }
                             })
