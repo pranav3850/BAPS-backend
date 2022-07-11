@@ -120,11 +120,18 @@ router.post("/updatePersonalInfo", (req, res, next) => {
                         console.log(err);
                         res.json(err)
                     } else { 
-                       
-                        db.executeSql("update contactNo="+req.body.contactNo+" where familyId="+req.body.familyId,function(data1,err){
-
+                        db.executeSql("select * from family where familyId="+req.body.familyId+" and mobNo="+req.body.contactNo,function(data1,err){
+                            if(err){
+                                res.json(err)
+                            }else{
+                                if(data1.length >0){
+                                    db.executeSql("update contactNo="+req.body.contactNo+" where familyId="+req.body.familyId,function(data1,err){
+                                        res.json('success');
+                                    });
+                                }
+                            }
                         });
-                         res.json('success');
+                        res.json('success');  
                     } 
                 })   
         }
