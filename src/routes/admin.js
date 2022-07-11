@@ -28,21 +28,16 @@ const { response } = require("express");
 
 
 
-let dates = new Date(new Date().setDate(new Date().getDate() - 60));
+
+var minutesToAdd=-5;
+var currentDate = new Date();
+var futureDate = new Date(currentDate.getTime() + minutesToAdd*60000).getMinutes();
+console.log(futureDate);
 const jobs = schedule.scheduleJob(' */5 * * * *', function () {
     console.log('Today is recognized by Rebecca Black!');
+    // db.executeSql("delete from otp where time <="+dates);
 });
-const job = schedule.scheduleJob('0 0 * * *', function () {
-    console.log('hello schedule')
-    db.executeSql("UPDATE `customer` SET `status`=false WHERE updateddate='" + dates.toISOString().slice(0, 10) + "';", function (data, err) {
 
-        if (err) {
-            console.log(err);
-        } else {
-            console.log(data);
-        }
-    });
-});
 
 router.get("/GetAllMandalTypeList", (req, res, next) => {
     db.executeSql("SELECT DISTINCT mandaltype from mandal", function (data, err) {
@@ -66,28 +61,47 @@ router.get("/GetMandalList/:type", (req, res, next) => {
 router.post("/savePersonalInfo", (req, res, next) => {
     console.log(req.body);
     for (let i = 0; i < req.body.length; i++) {
-        db.executeSql("select * from personalinfo where familyId=" + req.body[i].familyId + " and contactNo='" + req.body[i].contactNo + "';", function (data, err) {
-            if (err) {
-
-                res.json('err')
-
-            } else {
-                if (data.length > 0) {
-                    data[0].msg = 'added';
-                    res.json(data)
-
+        if(req.body[i].userId ==undefined){
+            db.executeSql("select * from personalinfo where familyId=" + req.body[i].familyId + " and contactNo='" + req.body[i].contactNo + "';", function (data, err) {
+                if (err) {
+    
+                    res.json('err')
+    
                 } else {
-                    db.executeSql("INSERT INTO `personalinfo`( `familyId`, `firstName`, `middleName`, `lastName`, `contactNo`, `mandalType`, `mandalName`, `mandalId`, `relationship`, `address`, `city`, `pincode`, `email`, `gender`, `bloodGrp`, `dob`, `maritalStatus`, `profession`, `status`, `occupation`, `businessType`, `workInfo`, `isForeignCountry`, `foreignCountry`, `foreignCity`, `foreignContact`, `tag`, `education`, `prepareIelts`,`skill`,`company`,`businesscity`,`native`) VALUES (" + req.body[i].familyId + ",'" + req.body[i].firstName + "','" + req.body[i].middleName + "','" + req.body[i].lastName + "','" + req.body[i].contactNo + "','" + req.body[i].mandalType + "','" + req.body[i].mandalName + "'," + req.body[i].mandalId + ",'" + req.body[i].relationship + "','" + req.body[i].address + "','" + req.body[i].city + "','" + req.body[i].pincode + "','" + req.body[i].email + "','" + req.body[i].gender + "','" + req.body[i].bloodGrp + "','" + req.body[i].dob + "','" + req.body[i].maritalStatus + "','" + req.body[i].profession + "','" + req.body[i].status + "','" + req.body[i].occupation + "','" + req.body[i].businessType + "','" + req.body[i].workInfo + "'," + req.body[i].isForeignCountry + ",'" + req.body[i].foreignCountry + "','" + req.body[i].foreignCity + "','" + req.body[i].foreignContact + "','" + req.body[i].tag + "','" + req.body[i].education + "'," + req.body[i].prepareIelts + ",'" + req.body[i].skill + "','" + req.body[i].company + "','" + req.body[i].businesscity + "','" + req.body[i].native + "')", function (data1, err) {
-                        if (err) {
-                            res.json('err')
-                        } else {
-                            res.json(data1)
-                        }
-
-                    })
+                    if (data.length > 0) {
+                        data[0].msg = 'added';
+                        res.json(data)
+    
+                    } else {
+                        db.executeSql("INSERT INTO `personalinfo`( `familyId`, `firstName`, `middleName`, `lastName`, `contactNo`, `mandalType`, `mandalName`, `mandalId`, `relationship`, `address`, `city`, `pincode`, `email`, `gender`, `bloodGrp`, `dob`, `maritalStatus`, `profession`, `status`, `occupation`, `businessType`, `workInfo`, `isForeignCountry`, `foreignCountry`, `foreignCity`, `foreignContact`, `tag`, `education`, `prepareIelts`,`skill`,`company`,`businesscity`,`native`) VALUES (" + req.body[i].familyId + ",'" + req.body[i].firstName + "','" + req.body[i].middleName + "','" + req.body[i].lastName + "','" + req.body[i].contactNo + "','" + req.body[i].mandalType + "','" + req.body[i].mandalName + "'," + req.body[i].mandalId + ",'" + req.body[i].relationship + "','" + req.body[i].address + "','" + req.body[i].city + "','" + req.body[i].pincode + "','" + req.body[i].email + "','" + req.body[i].gender + "','" + req.body[i].bloodGrp + "','" + req.body[i].dob + "','" + req.body[i].maritalStatus + "','" + req.body[i].profession + "','" + req.body[i].status + "','" + req.body[i].occupation + "','" + req.body[i].businessType + "','" + req.body[i].workInfo + "'," + req.body[i].isForeignCountry + ",'" + req.body[i].foreignCountry + "','" + req.body[i].foreignCity + "','" + req.body[i].foreignContact + "','" + req.body[i].tag + "','" + req.body[i].education + "'," + req.body[i].prepareIelts + ",'" + req.body[i].skill + "','" + req.body[i].company + "','" + req.body[i].businesscity + "','" + req.body[i].native + "')", function (data1, err) {
+                            if (err) {
+                                res.json('err')
+                            } else {
+                                res.json(data1)
+                            }
+    
+                        })
+                    }
                 }
-            }
-        })
+            })
+        }else{
+            db.executeSql("delete from personalinfo where userId=" + req.body[i].userId, function (data, err) {
+                if (err) {
+                    console.log(err);
+                    res.json(err)
+                } else {
+                        db.executeSql("INSERT INTO `personalinfo`( `familyId`, `firstName`, `middleName`, `lastName`, `contactNo`, `mandalType`, `mandalName`, `mandalId`, `relationship`, `address`, `city`, `pincode`, `email`, `gender`, `bloodGrp`, `dob`, `maritalStatus`, `profession`, `status`, `occupation`, `businessType`, `workInfo`, `isForeignCountry`, `foreignCountry`, `foreignCity`, `foreignContact`, `tag`, `education`, `prepareIelts`,`skill`,`company`,`businesscity`,`native`) VALUES (" + req.body[i].familyId + ",'" + req.body[i].firstName + "','" + req.body[i].middleName + "','" + req.body[i].lastName + "','" + req.body[i].contactNo + "','" + req.body[i].mandalType + "','" + req.body[i].mandalName + "'," + req.body[i].mandalId + ",'" + req.body[i].relationship + "','" + req.body[i].address + "','" + req.body[i].city + "','" + req.body[i].pincode + "','" + req.body[i].email + "','" + req.body[i].gender + "','" + req.body[i].bloodGrp + "','" + req.body[i].dob + "','" + req.body[i].maritalStatus + "','" + req.body[i].profession + "','" + req.body[i].status + "','" + req.body[i].occupation + "','" + req.body[i].businessType + "','" + req.body[i].workInfo + "'," + req.body[i].isForeignCountry + ",'" + req.body[i].foreignCountry + "','" + req.body[i].foreignCity + "','" + req.body[i].foreignContact + "','" + req.body[i].tag + "','" + req.body[i].education + "'," + req.body[i].prepareIelts + ",'" + req.body[i].skill + "','" + req.body[i].company + "','" + req.body[i].businesscity + "','" + req.body[i].native + "')", function (data, err) {
+                            if (err) {
+                                console.log(err);
+                                res.json(err)
+                            } else { 
+                                 res.json('success');
+                            } 
+                        })   
+                }
+            })
+        }
+        
 
 
 
@@ -382,7 +396,8 @@ router.get("/RemoveHaribhaktDetails/:id", (req, res, next) => {
         if (err) {
             console.log(err);
         } else {
-            return res.json(data);
+             res.json('success');
+        
         }
     });
 })
