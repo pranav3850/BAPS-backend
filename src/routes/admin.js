@@ -106,7 +106,11 @@ router.post("/updatePersonalInfo", (req, res, next) => {
                         console.log(err);
                         res.json(err)
                     } else { 
-                        res.json('success')
+                       
+                        db.executeSql("update contactNo="+req.body.contactNo+" where familyId="+req.body.familyId,function(data1,err){
+
+                        });
+                         res.json('success');
                     } 
                 })   
         }
@@ -134,7 +138,7 @@ router.get("/GetAllRelationList", (req, res, next) => {
 
 router.get("/getAllFamilyForData", (req, res, next) => {
     console.log('sjhuishxjhsjixhijshxui')
-    db.executeSql("select f.familyId,f.mobNo,f.noOfFamilyMem,e.userId,e.firstName,e.middlename,e.lastName,e.relationship,e.mandalType,e.mandalName,e.mandalId from family f left join personalinfo e on f.mobNo=e.contactNo and f.familyId=e.familyId", function (data, err) {
+    db.executeSql(" SELECT family.familyId,family.mobNo,family.noOfFamilyMem,personalinfo.userId,personalinfo.firstName,personalinfo.middlename,personalinfo.lastName,personalinfo.relationship,personalinfo.mandalType,personalinfo.mandalName,personalinfo.mandalId FROM personalinfo left JOIN family ON family.mobNo = personalinfo.contactNo and  family.familyId =(SELECT familyId FROM personalinfo WHERE contactNo = family.mobNo LIMIT 1) LIMIT 1;", function (data, err) {
         if (err) {
             console.log(err);
             res.json(err)
