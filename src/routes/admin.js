@@ -37,7 +37,7 @@ console.log(futureDate);
 var today = new Date();
 var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
 console.log(time);
-const jobs = schedule.scheduleJob(' * */5 * * * *', function () {
+const jobs = schedule.scheduleJob(' * /5 * * * *', function () {
     // console.log(milliseconds);
 
     // db.executeSql("select * from otp", function (data, err) {
@@ -98,17 +98,19 @@ router.post("/savePersonalInfo", (req, res, next) => {
                 }
             })
         } else {
+            console.log("you are here");
             db.executeSql("delete from personalinfo where userId=" + req.body[i].userId, function (data, err) {
                 if (err) {
                     console.log(err);
                     res.json(err)
                 } else {
-                    db.executeSql("INSERT INTO `personalinfo`( `familyId`, `firstName`, `middleName`, `lastName`, `contactNo`, `mandalType`, `mandalName`, `mandalId`, `relationship`, `address`, `city`, `pincode`, `email`, `gender`, `bloodGrp`, `dob`, `maritalStatus`, `profession`, `status`, `occupation`, `businessType`, `workInfo`, `isForeignCountry`, `foreignCountry`, `foreignCity`, `foreignContact`, `tag`, `education`, `prepareIelts`,`skill`,`company`,`businesscity`,`native`) VALUES (" + req.body[i].familyId + ",'" + req.body[i].firstName + "','" + req.body[i].middleName + "','" + req.body[i].lastName + "','" + req.body[i].contactNo + "','" + req.body[i].mandalType + "','" + req.body[i].mandalName + "'," + req.body[i].mandalId + ",'" + req.body[i].relationship + "','" + req.body[i].address + "','" + req.body[i].city + "','" + req.body[i].pincode + "','" + req.body[i].email + "','" + req.body[i].gender + "','" + req.body[i].bloodGrp + "','" + req.body[i].dob + "','" + req.body[i].maritalStatus + "','" + req.body[i].profession + "','" + req.body[i].status + "','" + req.body[i].occupation + "','" + req.body[i].businessType + "','" + req.body[i].workInfo + "'," + req.body[i].isForeignCountry + ",'" + req.body[i].foreignCountry + "','" + req.body[i].foreignCity + "','" + req.body[i].foreignContact + "','" + req.body[i].tag + "','" + req.body[i].education + "'," + req.body[i].prepareIelts + ",'" + req.body[i].skill + "','" + req.body[i].company + "','" + req.body[i].businesscity + "','" + req.body[i].native + "')", function (data, err) {
+                    db.executeSql("INSERT INTO `personalinfo`( `familyId`, `firstName`, `middleName`, `lastName`, `contactNo`, `mandalType`, `mandalName`, `mandalId`, `relationship`, `address`, `city`, `pincode`, `email`, `gender`, `bloodGrp`, `dob`, `maritalStatus`, `profession`, `status`, `occupation`, `businessType`, `workInfo`, `isForeignCountry`, `foreignCountry`, `foreignCity`, `foreignContact`, `tag`, `education`, `prepareIelts`,`skill`,`company`,`businesscity`,`native`) VALUES (" + req.body[i].familyId + ",'" + req.body[i].firstName + "','" + req.body[i].middleName + "','" + req.body[i].lastName + "','" + req.body[i].contactNo + "','" + req.body[i].mandalType + "','" + req.body[i].mandalName + "'," + req.body[i].mandalId + ",'" + req.body[i].relationship + "','" + req.body[i].address + "','" + req.body[i].city + "','" + req.body[i].pincode + "','" + req.body[i].email + "','" + req.body[i].gender + "','" + req.body[i].bloodGrp + "','" + req.body[i].dob + "','" + req.body[i].maritalStatus + "','" + req.body[i].profession + "','" + req.body[i].status + "','" + req.body[i].occupation + "','" + req.body[i].businessType + "','" + req.body[i].workInfo + "'," + req.body[i].isForeignCountry + ",'" + req.body[i].foreignCountry + "','" + req.body[i].foreignCity + "','" + req.body[i].foreignContact + "','" + req.body[i].tag + "','" + req.body[i].education + "'," + req.body[i].prepareIelts + ",'" + req.body[i].skill + "','" + req.body[i].company + "','" + req.body[i].businesscity + "','" + req.body[i].native + "')", function (data3, err) {
                         if (err) {
                             console.log(err);
                             res.json(err)
                         } else {
-                            res.json('success');
+                            console.log('inserted');
+                            res.json(data3);
                         }
                     })
                 }
@@ -122,7 +124,21 @@ router.post("/savePersonalInfo", (req, res, next) => {
 })
 
 router.post("/updatePersonalInfo", (req, res, next) => {
-    console.log(req.body);
+     console.log("updateion jkjkjk");
+        console.log(req.body);
+        db.executeSql("select * from family where familyId="+req.body.familyId+" and mobNo='"+req.body.oldno+"'",function(data1,err){
+            if(err){
+                console.log(err)
+            }else{
+                console.log(data1)
+                if(data1.length >0){
+                    db.executeSql("update family set mobNo='"+req.body.contactNo+"' where familyId="+req.body.familyId,function(data1,err){
+                       
+                    });
+                }
+            }
+        });
+   
     db.executeSql("delete from personalinfo where userId=" + req.body.userId, function (data, err) {
         if (err) {
             console.log(err);
@@ -133,17 +149,7 @@ router.post("/updatePersonalInfo", (req, res, next) => {
                         console.log(err);
                         res.json(err)
                     } else { 
-                        db.executeSql("select * from family where familyId="+req.body.familyId+" and mobNo="+req.body.contactNo,function(data1,err){
-                            if(err){
-                                res.json(err)
-                            }else{
-                                if(data1.length >0){
-                                    db.executeSql("update contactNo="+req.body.contactNo+" where familyId="+req.body.familyId,function(data1,err){
-                                        res.json('success');
-                                    });
-                                }
-                            }
-                        });
+                       
                         res.json('success');  
                     } 
                 })   
@@ -172,12 +178,36 @@ router.get("/GetAllRelationList", (req, res, next) => {
 
 router.get("/getAllFamilyForData", (req, res, next) => {
     console.log('sjhuishxjhsjixhijshxui')
-    db.executeSql(" SELECT family.familyId,family.mobNo,family.noOfFamilyMem,personalinfo.userId,personalinfo.firstName,personalinfo.middlename,personalinfo.lastName,personalinfo.relationship,personalinfo.mandalType,personalinfo.mandalName,personalinfo.mandalId FROM personalinfo left JOIN family ON family.mobNo = personalinfo.contactNo and  family.familyId =(SELECT familyId FROM personalinfo WHERE contactNo = family.mobNo LIMIT 1) LIMIT 1;", function (data, err) {
+    db.executeSql("SELECT  family.familyId,family.mobNo,family.noOfFamilyMem,personalinfo.userId,personalinfo.firstName,personalinfo.middlename,personalinfo.lastName,personalinfo.relationship,personalinfo.mandalType,personalinfo.mandalName,personalinfo.mandalId FROM personalinfo  JOIN family ON family.mobNo = personalinfo.contactNo and  family.familyId =(SELECT DISTINCT  familyId FROM personalinfo WHERE contactNo = family.mobNo );", function (data, err) {
         if (err) {
             console.log(err);
             res.json(err)
         } else {
             res.json(data);
+        }
+    })
+})
+router.post("/updateFamilyCount",(req,res,next)=>{
+   
+    db.executeSql("select * from personalinfo where contactNo='"+req.body.mob+"'",function(data,err){
+        if(err){
+            res.json(err)
+        }else{
+            console.log(data);
+            db.executeSql("select * from personalinfo where familyId="+data[0].familyId,function(data1,err){
+                if(err){
+                    res.json(err)
+                }else{
+                    db.executeSql("update family set noOfFamilyMem="+data1.length+" where familyId="+data1[0].familyId,function(data1,err){
+                        if(err){
+                            res.json(err)
+                        }else{
+                            res.json('success');
+                        }
+                    })
+                }
+            })
+           
         }
     })
 })
@@ -226,6 +256,7 @@ router.post("/getOldDetails", (req, res, next) => {
                     console.log(err)
                     res.json('err')
                 } else {
+                    data1[0].nooffamily = data[0].noOfFamilyMem;
                     res.json(data1)
                 }
             })
